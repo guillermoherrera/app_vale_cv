@@ -10,7 +10,7 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  final bool _isLogged = true;
+  final bool _isLogged = false;
   @override
   Widget build(BuildContext context) {
     return !_isLogged ? const LoginPage() : const HomePage();
