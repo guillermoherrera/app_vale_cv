@@ -1,5 +1,6 @@
 import 'package:app_vale_cv/helpers/constants.dart';
 import 'package:app_vale_cv/widgets/custom_elevated_button.dart';
+import 'package:app_vale_cv/widgets/custom_fade_transition.dart';
 import 'package:app_vale_cv/widgets/custom_text_field.dart';
 import 'package:app_vale_cv/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +24,56 @@ class _LoginPageState extends State<LoginPage> {
     final _width = MediaQuery.of(context).size.width;
     return Scaffold(
         key: _scaffoldKey,
+        resizeToAvoidBottomInset: false,
         body: Stack(
-          children: [_formulario(_height, _width)],
+          children: [
+            _fondo(_height),
+            Container(color: Constants.colorPrimary.withOpacity(0.7)),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _logo(_height),
+                _formulario(_height, _width),
+              ],
+            )
+          ],
+        ));
+  }
+
+  Widget _fondo(double height) {
+    return SizedBox(
+      height: double.infinity,
+      width: double.infinity,
+      child: Image(
+          image: const AssetImage(Constants.assetsFondologin),
+          height: height / 4.4,
+          fit: BoxFit.cover),
+    );
+  }
+
+  Widget _logo(double height) {
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: height / 16),
+        color: Colors.transparent,
+        width: double.infinity,
+        child: CustomFadeTransition(
+          tweenBegin: 1.0,
+          duration: const Duration(milliseconds: 30000),
+          child: Column(
+            children: [
+              Hero(
+                  tag: 'LogoLogin',
+                  child: Image(
+                      image: const AssetImage(Constants.assetsImagelogo),
+                      color: Constants.colorDefault,
+                      height: height / 4.4,
+                      fit: BoxFit.contain)),
+              const Text(
+                'v1.0.0',
+                style: Constants.textStyleSubTitleDefault,
+              )
+            ],
+          ),
         ));
   }
 
@@ -64,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
               action: () {},
               textColor: Constants.colorDefault,
               primaryColor: Constants.colorAlternative,
-              borderColor: Constants.colorPrimary,
+              borderColor: Constants.colorAlternative,
             ),
           ))
     ];
@@ -73,6 +122,6 @@ class _LoginPageState extends State<LoginPage> {
         key: _formKey,
         child: Container(
             padding: EdgeInsets.symmetric(horizontal: width / 16),
-            child: ListView(children: content)));
+            child: Column(children: content)));
   }
 }

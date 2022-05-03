@@ -85,8 +85,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
     }
 
     if (widget.checkEmpty && value.isEmpty) return widget.errorEmpty;
-    if (widget.checkMaxLength && value.length < widget.maxLength)
+    if (widget.checkMaxLength && value.length < widget.maxLength) {
       return 'Completa este campo';
+    }
     return null;
   }
 }
