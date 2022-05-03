@@ -22,8 +22,11 @@ class _LoginPageState extends State<LoginPage> {
   final _passController = TextEditingController();
 
   void _loginSubmit(UserBloc userBloc) {
-    final user = User(nombre: 'Angel Confia', numeroDv: "000001");
-    userBloc.add(ActivateUserEvent(user));
+    bool validate = _formKey.currentState!.validate();
+    if (validate) {
+      final user = User(nombre: 'Angel Confia', numeroDv: "000001");
+      userBloc.add(ActivateUserEvent(user));
+    }
   }
 
   @override
@@ -67,8 +70,8 @@ class _LoginPageState extends State<LoginPage> {
         color: Colors.transparent,
         width: double.infinity,
         child: CustomFadeTransition(
-          tweenBegin: 1.0,
-          duration: const Duration(milliseconds: 30000),
+          tweenBegin: 0.0,
+          duration: const Duration(milliseconds: 3000),
           child: Column(
             children: [
               Hero(
@@ -111,6 +114,7 @@ class _LoginPageState extends State<LoginPage> {
               controller: _passController,
               icon: Icons.lock,
               isPassword: true,
+              action: () => _loginSubmit(userBloc),
             ),
           )),
       ShakeTransition(

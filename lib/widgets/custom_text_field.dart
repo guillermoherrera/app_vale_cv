@@ -6,7 +6,7 @@ class CustomTextField extends StatefulWidget {
     Key? key,
     required this.label,
     this.icon,
-    this.errorEmpty = 'Ingresa este campo',
+    this.errorEmpty = 'Completa este campo',
     this.textType = TextInputType.emailAddress,
     this.checkEmpty = true,
     this.isPassword = false,
@@ -18,6 +18,7 @@ class CustomTextField extends StatefulWidget {
     this.onchangeMethod,
     this.enableUpperCase = false,
     this.validacion,
+    this.action,
   }) : super(key: key);
 
   final String label;
@@ -34,6 +35,7 @@ class CustomTextField extends StatefulWidget {
   final bool enableUpperCase;
   final void Function(String)? onchangeMethod;
   final bool Function()? validacion;
+  final VoidCallback? action;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -49,11 +51,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
       autocorrect: false,
       inputFormatters: widget.enableUpperCase ? [UpperCaseTextFormatter()] : [],
       keyboardType: widget.textType,
-      obscureText: widget.isPassword,
+      obscureText: widget.isPassword ? !watchPassword : false,
       maxLength: widget.maxLength,
       enabled: widget.enable,
       validator: (val) {
         return _validations(val!);
+      },
+      onFieldSubmitted: (val) {
+        widget.action!();
       },
     );
   }
