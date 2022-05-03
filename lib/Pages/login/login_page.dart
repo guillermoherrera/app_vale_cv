@@ -1,9 +1,12 @@
+import 'package:app_vale_cv/bloc/user/user_bloc.dart';
 import 'package:app_vale_cv/helpers/constants.dart';
+import 'package:app_vale_cv/models/user.dart';
 import 'package:app_vale_cv/widgets/custom_elevated_button.dart';
 import 'package:app_vale_cv/widgets/custom_fade_transition.dart';
 import 'package:app_vale_cv/widgets/custom_text_field.dart';
 import 'package:app_vale_cv/widgets/shake_transition.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -18,10 +21,17 @@ class _LoginPageState extends State<LoginPage> {
   final _userController = TextEditingController();
   final _passController = TextEditingController();
 
+  void _loginSubmit(UserBloc userBloc) {
+    final user = User(nombre: 'Angel Confia', numeroDv: "000001");
+    userBloc.add(ActivateUserEvent(user));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userBloc = BlocProvider.of<UserBloc>(context, listen: false);
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
+
     return Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
@@ -33,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _logo(_height),
-                _formulario(_height, _width),
+                _formulario(_height, _width, userBloc),
               ],
             )
           ],
@@ -77,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _formulario(double height, double width) {
+  Widget _formulario(double height, double width, UserBloc userBloc) {
     List<Widget> content = [
       ShakeTransition(
           axis: Axis.vertical,
@@ -110,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
             margin: EdgeInsets.only(bottom: height / 16),
             child: CustomElevatedButton(
               label: 'Iniciar Sesión',
-              action: () {},
+              action: () => _loginSubmit(userBloc),
               textColor: Constants.colorDefault,
               primaryColor: Constants.colorAlternative,
               borderColor: Constants.colorAlternative,
