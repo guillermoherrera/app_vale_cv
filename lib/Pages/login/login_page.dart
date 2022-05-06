@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Container(
             margin: EdgeInsets.only(bottom: height / 16),
             child: CustomTextField(
-              label: 'Usuario',
+              label: 'USUARIO',
               controller: _userController,
               icon: Icons.account_circle,
               enableUpperCase: true,
@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Container(
             margin: EdgeInsets.only(bottom: height / 16),
             child: CustomTextField(
-              label: 'Password',
+              label: 'PASSWORD',
               controller: _passController,
               icon: Icons.lock,
               isPassword: true,

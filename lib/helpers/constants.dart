@@ -21,7 +21,7 @@ class Constants {
   static const TextStyle textStyleTitle = TextStyle(
       fontWeight: FontWeight.bold, fontSize: 30.0, color: colorDefaultText);
   static const TextStyle textStyleSubTitle = TextStyle(
-      fontWeight: FontWeight.bold, fontSize: 20.0, color: colorDefaultText);
+      fontWeight: FontWeight.bold, fontSize: 18.0, color: colorDefaultText);
   static const TextStyle textStyleParagraph = TextStyle(
       fontWeight: FontWeight.bold, fontSize: 10.0, color: colorDefaultText);
 
@@ -30,7 +30,7 @@ class Constants {
   static const TextStyle textStyleTitleDefault = TextStyle(
       fontWeight: FontWeight.bold, fontSize: 30.0, color: colorDefault);
   static const TextStyle textStyleSubTitleDefault = TextStyle(
-      fontWeight: FontWeight.bold, fontSize: 20.0, color: colorDefault);
+      fontWeight: FontWeight.bold, fontSize: 18.0, color: colorDefault);
   static const TextStyle textStyleParagraphDefault = TextStyle(
       fontWeight: FontWeight.bold, fontSize: 10.0, color: colorDefault);
 }
