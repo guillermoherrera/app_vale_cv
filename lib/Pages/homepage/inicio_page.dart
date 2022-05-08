@@ -1,3 +1,4 @@
+import 'package:app_vale_cv/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../helpers/constants.dart';
@@ -12,8 +13,17 @@ class InicioPage extends StatefulWidget {
 class _InicioPageState extends State<InicioPage> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [_colocaGana(), _miSaldo(), _saldoDetalle()],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _colocaGana(),
+          _miSaldo(),
+          _saldoDetalle(),
+          _nuevoCredito(),
+          _resumenRelacion(),
+          _relacion()
+        ],
+      ),
     );
   }
 
@@ -206,5 +216,211 @@ class _InicioPageState extends State<InicioPage> {
         ),
       ),
     );
+  }
+
+  Widget _nuevoCredito() {
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(30.0),
+        topRight: Radius.circular(30.0),
+        bottomRight: Radius.circular(30.0),
+        bottomLeft: Radius.circular(30.0),
+      ),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+        color: Constants.colorDefaultText.withOpacity(0.2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('NUEVO VALE DIGITAL',
+                style: Constants.textStyleTitleDefault),
+            const Text('OTORGA UN NUEVO VALE A TUS CLIENTES',
+                style: Constants.textStyleParagraph),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomElevatedButton(
+                  label: 'NUEVO VALE',
+                  action: () {},
+                  primaryColor: Constants.colorDefault,
+                  textColor: Constants.colorPrimary,
+                  borderColor: Constants.colorPrimary,
+                ),
+                CustomElevatedButton(
+                  label: 'CONFIASHOP',
+                  action: () {},
+                  primaryColor: Constants.colorAlternative,
+                  textColor: Constants.colorDefault,
+                  borderColor: Constants.colorDefault,
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _resumenRelacion() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+            bottomLeft: Radius.circular(30.0),
+            bottomRight: Radius.circular(30.0),
+          ),
+          child: Container(
+            width: double.infinity,
+            padding:
+                const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+            color: Constants.colorDefault,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('GANA MAS PAGANDO ANTES',
+                    style: Constants.textStyleSubTitle),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 5.0, vertical: 5.0),
+                  child: Table(
+                    children: [
+                      _tableRow(
+                          const Text('FECHA PAGO',
+                              style: Constants.textStyleStandard),
+                          const Text('01/01/2001',
+                              style: Constants.textStyleStandard)),
+                      _tableRow(
+                          const Text('TASA PORCENTAJE',
+                              style: Constants.textStyleStandard),
+                          const Text('0.00%',
+                              style: Constants.textStyleStandard)),
+                      _tableRow(
+                          const Text('BONIFICACIÓN',
+                              style: Constants.textStyleStandard),
+                          const Text('\$0.00',
+                              style: Constants.textStyleStandard)),
+                    ],
+                  ),
+                ),
+                const Text('SALDO COVID', style: Constants.textStyleSubTitle),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 5.0, vertical: 5.0),
+                  child: Table(
+                    children: [
+                      _tableRow(
+                          const Text('FECHA CIERRE',
+                              style: Constants.textStyleStandard),
+                          const Text('01/01/2001',
+                              style: Constants.textStyleStandard)),
+                      _tableRow(
+                          const Text('IMPORTE',
+                              style: Constants.textStyleStandard),
+                          const Text('\$0.00%',
+                              style: Constants.textStyleStandard)),
+                      _tableRow(
+                          const Text('SALDO',
+                              style: Constants.textStyleStandard),
+                          const Text('\$0.00',
+                              style: Constants.textStyleStandard)),
+                    ],
+                  ),
+                ),
+                const Text('ÚLTIMA RELACIÓN',
+                    style: Constants.textStyleSubTitle),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 5.0, vertical: 5.0),
+                  child: Table(
+                    children: [
+                      _tableRow(
+                          const Text('05/SEP/2022',
+                              style: Constants.textStyleStandard),
+                          const Text('\$9,999.00',
+                              style: Constants.textStyleStandard))
+                    ],
+                  ),
+                ),
+                const Text('PRESTAMO PERSONAL',
+                    style: Constants.textStyleSubTitle),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 5.0, vertical: 5.0),
+                  child: Table(
+                    children: [
+                      _tableRow(
+                          const Text('SALDO ACTUAL',
+                              style: Constants.textStyleStandard),
+                          const Text('\$0.00',
+                              style: Constants.textStyleStandard)),
+                      _tableRow(
+                          const Text('ABONO QUINCENAL',
+                              style: Constants.textStyleStandard),
+                          const Text('\$0.00',
+                              style: Constants.textStyleStandard)),
+                      _tableRow(
+                          const Text('SALDO VENCIDO',
+                              style: Constants.textStyleStandard),
+                          const Text('\$0.00',
+                              style: Constants.textStyleStandard))
+                    ],
+                  ),
+                ),
+                const Center(
+                  child: Text(
+                    'ÚLTIMA ACTIALIZACION 01/01/01 00:00 AM',
+                    style: Constants.textStyleParagraph,
+                  ),
+                )
+              ],
+            ),
+          )),
+    );
+  }
+
+  Widget _relacion() {
+    return ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(30.0),
+          topRight: Radius.circular(30.0),
+        ),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+          color: Constants.colorDefault,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: const [
+                  Icon(
+                    Icons.info_outline,
+                    color: Constants.colorSecondary,
+                  ),
+                  Text(
+                    'RELACIÓN DE COBRO',
+                    style: Constants.textStyleSubTitle,
+                  )
+                ],
+              ),
+              const Text(
+                'DESCARGA TU RELACIÓN DE COBRA AQUÍ',
+                style: Constants.textStyleParagraph,
+              ),
+              Center(
+                child: CustomElevatedButton(
+                  label: 'DESCARGAR',
+                  action: () {},
+                  primaryColor: Constants.colorSecondary,
+                  textColor: Constants.colorDefault,
+                  borderColor: Constants.colorSecondary,
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
