@@ -10,6 +10,7 @@ class Constants {
 
   //Rutas
   static const String pageRoot = 'root';
+  static const String pageCliente = 'cliente';
 
   //Assets
   static const String assetsImagelogo = 'assets/logoConfia.png';

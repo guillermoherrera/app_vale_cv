@@ -1,8 +1,8 @@
-import 'package:app_vale_cv/widgets/animator.dart';
-import 'package:app_vale_cv/widgets/custom_list_tile.dart';
 import 'package:flutter/material.dart';
-
 import '../../helpers/constants.dart';
+import 'package:app_vale_cv/widgets/custom_list_tile.dart';
+import 'package:app_vale_cv/widgets/animator.dart';
+import 'package:app_vale_cv/helpers/custom_route_transition.dart';
 
 class ClientesPage extends StatefulWidget {
   const ClientesPage({Key? key}) : super(key: key);
@@ -12,6 +12,7 @@ class ClientesPage extends StatefulWidget {
 }
 
 class _ClientesPageState extends State<ClientesPage> {
+  final _customRoute = CustomRouteTransition();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   List<int> clientes = [];
@@ -140,8 +141,15 @@ class _ClientesPageState extends State<ClientesPage> {
                               ),
                               leading: const Icon(Icons.person,
                                   color: Constants.colorDefaultText),
-                              trailing: const Icon(Icons.arrow_forward_ios,
-                                  color: Constants.colorDefaultText))));
+                              trailing: IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        _customRoute.createRutaSlide(
+                                            Constants.pageCliente));
+                                  },
+                                  icon: const Icon(Icons.arrow_forward_ios,
+                                      color: Constants.colorDefaultText)))));
                 })));
   }
 }
