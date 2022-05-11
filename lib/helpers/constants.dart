@@ -25,6 +25,8 @@ class Constants {
       fontWeight: FontWeight.bold, fontSize: 18.0, color: colorDefaultText);
   static const TextStyle textStyleStandard = TextStyle(
       fontWeight: FontWeight.bold, fontSize: 12.0, color: colorDefaultText);
+  static const TextStyle textStyleStandardError =
+      TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0, color: Colors.red);
   static const TextStyle textStyleParagraph = TextStyle(
       fontWeight: FontWeight.bold, fontSize: 10.0, color: colorDefaultText);
 
