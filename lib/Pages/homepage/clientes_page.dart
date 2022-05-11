@@ -1,3 +1,4 @@
+import 'package:app_vale_cv/widgets/custom_loading.dart';
 import 'package:flutter/material.dart';
 import '../../helpers/constants.dart';
 import 'package:app_vale_cv/widgets/custom_list_tile.dart';
@@ -15,7 +16,8 @@ class _ClientesPageState extends State<ClientesPage> {
   final _customRoute = CustomRouteTransition();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
-  List<int> clientes = [];
+  List<int> _clientes = [];
+  bool _cargando = true;
 
   @override
   void initState() {
@@ -24,11 +26,12 @@ class _ClientesPageState extends State<ClientesPage> {
   }
 
   _getClientes() async {
-    clientes.clear();
+    _clientes.clear();
     await Future.delayed(const Duration(seconds: 1));
     if (mounted) {
       setState(() {
-        clientes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        _clientes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        _cargando = false;
       });
     }
   }
@@ -57,12 +60,16 @@ class _ClientesPageState extends State<ClientesPage> {
   Widget _bodyContent() {
     return RefreshIndicator(
         key: _refreshKey,
-        child: _showResult(),
+        child: _cargando
+            ? const CustomLoading(
+                label: 'CARGANDO CLIENTES...',
+              )
+            : _showResult(),
         onRefresh: () => _getClientes());
   }
 
   Widget _showResult() {
-    return clientes.isNotEmpty ? _listFill() : _noData();
+    return _clientes.isNotEmpty ? _listFill() : _noData();
   }
 
   Widget _noData() {
@@ -102,7 +109,7 @@ class _ClientesPageState extends State<ClientesPage> {
           Column(
             children: [
               const Icon(Icons.person, color: Constants.colorDefaultText),
-              Text('${clientes.length}', style: Constants.textStyleStandard)
+              Text('${_clientes.length}', style: Constants.textStyleStandard)
             ],
           )
         ],
@@ -116,9 +123,9 @@ class _ClientesPageState extends State<ClientesPage> {
             context: context,
             removeTop: true,
             child: ListView.builder(
-                itemCount: clientes.length,
+                itemCount: _clientes.length,
                 itemBuilder: (_, index) {
-                  if (index == clientes.length) {
+                  if (index == _clientes.length) {
                     return const SizedBox(height: 50.0);
                   }
                   return WidgetAnimator(

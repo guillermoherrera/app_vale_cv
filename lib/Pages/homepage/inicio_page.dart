@@ -16,7 +16,7 @@ class _InicioPageState extends State<InicioPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          _colocaGana(),
+          //_colocaGana(),
           _miSaldo(),
           _saldoDetalle(),
           _nuevoCredito(),
@@ -27,66 +27,66 @@ class _InicioPageState extends State<InicioPage> {
     );
   }
 
-  Widget _colocaGana() {
-    return Container(
-      width: double.infinity,
-      height: 100.0,
-      margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20.0),
-        child: Container(
-          color: Constants.colorDefaultText.withOpacity(0.2),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 15.0),
-                  child: const Text('COLOCA Y GANA',
-                      style: Constants.textStyleSubTitleDefault)),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Stack(
-                  children: const [
-                    LinearProgressIndicator(
-                      color: Constants.colorPrimary,
-                      backgroundColor: Constants.colorDefault,
-                      minHeight: 30.0,
-                      value: .50,
-                    ),
-                    Align(
-                      child:
-                          Text("\$1000.00", style: Constants.textStyleSubTitle),
-                      alignment: Alignment.center,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 1.0, horizontal: 15.0),
-                  child: const Align(
-                    alignment: Alignment.bottomRight,
-                    child: Text('META \$2000.00',
-                        style: Constants.textStyleParagraph),
-                  )),
-              Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 1.0, horizontal: 15.0),
-                  child: const Align(
-                    alignment: Alignment.bottomRight,
-                    child: Text(
-                        '*VIGENCIA DEL 01 DE SEPTIEMBRE AL 01 DE NOVIEMBRE DEL 2022',
-                        style: Constants.textStyleParagraph),
-                  )),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _colocaGana() {
+  //   return Container(
+  //     width: double.infinity,
+  //     height: 100.0,
+  //     margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+  //     child: ClipRRect(
+  //       borderRadius: BorderRadius.circular(20.0),
+  //       child: Container(
+  //         color: Constants.colorDefaultText.withOpacity(0.2),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             Container(
+  //                 margin: const EdgeInsets.symmetric(
+  //                     vertical: 8.0, horizontal: 15.0),
+  //                 child: const Text('COLOCA Y GANA',
+  //                     style: Constants.textStyleSubTitleDefault)),
+  //             Container(
+  //               padding: const EdgeInsets.symmetric(horizontal: 15.0),
+  //               child: Stack(
+  //                 children: const [
+  //                   LinearProgressIndicator(
+  //                     color: Constants.colorPrimary,
+  //                     backgroundColor: Constants.colorDefault,
+  //                     minHeight: 30.0,
+  //                     value: .50,
+  //                   ),
+  //                   Align(
+  //                     child:
+  //                         Text("\$1000.00", style: Constants.textStyleSubTitle),
+  //                     alignment: Alignment.center,
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             Container(
+  //                 width: double.infinity,
+  //                 margin: const EdgeInsets.symmetric(
+  //                     vertical: 1.0, horizontal: 15.0),
+  //                 child: const Align(
+  //                   alignment: Alignment.bottomRight,
+  //                   child: Text('META \$2000.00',
+  //                       style: Constants.textStyleParagraph),
+  //                 )),
+  //             Container(
+  //                 width: double.infinity,
+  //                 margin: const EdgeInsets.symmetric(
+  //                     vertical: 1.0, horizontal: 15.0),
+  //                 child: const Align(
+  //                   alignment: Alignment.bottomRight,
+  //                   child: Text(
+  //                       '*VIGENCIA DEL 01 DE SEPTIEMBRE AL 01 DE NOVIEMBRE DEL 2022',
+  //                       style: Constants.textStyleParagraph),
+  //                 )),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _miSaldo() {
     return Container(
@@ -124,14 +124,14 @@ class _InicioPageState extends State<InicioPage> {
                   overflow: TextOverflow.ellipsis,
                   style: Constants.textStyleSubTitle),
               const Text('\$20000.00', style: Constants.textStyleSubTitle)),
-          _tableRow(
-              const Text('MONEDERO CONFIA SHOP',
-                  overflow: TextOverflow.ellipsis,
-                  style: Constants.textStyleSubTitle),
-              const Text('\$100.00', style: Constants.textStyleSubTitle)),
-          _tableRow(
-              const Text('SALDO COVID', style: Constants.textStyleSubTitle),
-              const Text('\$0.00', style: Constants.textStyleSubTitle)),
+          // _tableRow(
+          //     const Text('MONEDERO CONFIA SHOP',
+          //         overflow: TextOverflow.ellipsis,
+          //         style: Constants.textStyleSubTitle),
+          //     const Text('\$100.00', style: Constants.textStyleSubTitle)),
+          // _tableRow(
+          //     const Text('SALDO COVID', style: Constants.textStyleSubTitle),
+          //     const Text('\$0.00', style: Constants.textStyleSubTitle)),
         ],
       ),
     );
@@ -247,13 +247,13 @@ class _InicioPageState extends State<InicioPage> {
                   textColor: Constants.colorPrimary,
                   borderColor: Constants.colorPrimary,
                 ),
-                CustomElevatedButton(
-                  label: 'CONFIASHOP',
-                  action: () {},
-                  primaryColor: Constants.colorAlternative,
-                  textColor: Constants.colorDefault,
-                  borderColor: Constants.colorDefault,
-                )
+                // CustomElevatedButton(
+                //   label: 'CONFIASHOP',
+                //   action: () {},
+                //   primaryColor: Constants.colorAlternative,
+                //   textColor: Constants.colorDefault,
+                //   borderColor: Constants.colorDefault,
+                // )
               ],
             )
           ],
@@ -305,30 +305,30 @@ class _InicioPageState extends State<InicioPage> {
                     ],
                   ),
                 ),
-                const Text('SALDO COVID', style: Constants.textStyleSubTitle),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 5.0, vertical: 5.0),
-                  child: Table(
-                    children: [
-                      _tableRow(
-                          const Text('FECHA CIERRE',
-                              style: Constants.textStyleStandard),
-                          const Text('01/01/2001',
-                              style: Constants.textStyleStandard)),
-                      _tableRow(
-                          const Text('IMPORTE',
-                              style: Constants.textStyleStandard),
-                          const Text('\$0.00%',
-                              style: Constants.textStyleStandard)),
-                      _tableRow(
-                          const Text('SALDO',
-                              style: Constants.textStyleStandard),
-                          const Text('\$0.00',
-                              style: Constants.textStyleStandard)),
-                    ],
-                  ),
-                ),
+                // const Text('SALDO COVID', style: Constants.textStyleSubTitle),
+                // Container(
+                //   padding: const EdgeInsets.symmetric(
+                //       horizontal: 5.0, vertical: 5.0),
+                //   child: Table(
+                //     children: [
+                //       _tableRow(
+                //           const Text('FECHA CIERRE',
+                //               style: Constants.textStyleStandard),
+                //           const Text('01/01/2001',
+                //               style: Constants.textStyleStandard)),
+                //       _tableRow(
+                //           const Text('IMPORTE',
+                //               style: Constants.textStyleStandard),
+                //           const Text('\$0.00%',
+                //               style: Constants.textStyleStandard)),
+                //       _tableRow(
+                //           const Text('SALDO',
+                //               style: Constants.textStyleStandard),
+                //           const Text('\$0.00',
+                //               style: Constants.textStyleStandard)),
+                //     ],
+                //   ),
+                // ),
                 const Text('ÚLTIMA RELACIÓN',
                     style: Constants.textStyleSubTitle),
                 Container(
