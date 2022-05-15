@@ -12,7 +12,8 @@ class ClientesPage extends StatefulWidget {
   State<ClientesPage> createState() => _ClientesPageState();
 }
 
-class _ClientesPageState extends State<ClientesPage> {
+class _ClientesPageState extends State<ClientesPage>
+    with AutomaticKeepAliveClientMixin {
   final _customRoute = CustomRouteTransition();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
@@ -38,6 +39,7 @@ class _ClientesPageState extends State<ClientesPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: [
         Expanded(
@@ -131,8 +133,10 @@ class _ClientesPageState extends State<ClientesPage> {
                   return WidgetAnimator(
                       child: GestureDetector(
                           onTap: () {
-                            // ignore: avoid_print
-                            print('print');
+                            Navigator.push(
+                                context,
+                                _customRoute
+                                    .createRutaSlide(Constants.pageCliente));
                           },
                           child: CustomListTile(
                               title: Text('NOMBRE CLIENTE ${index + 1}',
@@ -148,15 +152,17 @@ class _ClientesPageState extends State<ClientesPage> {
                               ),
                               leading: const Icon(Icons.person,
                                   color: Constants.colorDefaultText),
-                              trailing: IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        _customRoute.createRutaSlide(
-                                            Constants.pageCliente));
-                                  },
-                                  icon: const Icon(Icons.arrow_forward_ios,
-                                      color: Constants.colorDefaultText)))));
+                              trailing: index % 3 != 0
+                                  ? const Text(
+                                      'SITUACIÓN NORMAL',
+                                      style: Constants.textStyleParagraph,
+                                    )
+                                  : const Text('BLOQUEADO',
+                                      style:
+                                          Constants.textStyleParagraphError))));
                 })));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -10,9 +10,11 @@ class InicioPage extends StatefulWidget {
   State<InicioPage> createState() => _InicioPageState();
 }
 
-class _InicioPageState extends State<InicioPage> {
+class _InicioPageState extends State<InicioPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -423,4 +425,7 @@ class _InicioPageState extends State<InicioPage> {
           ),
         ));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

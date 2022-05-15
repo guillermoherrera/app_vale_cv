@@ -13,7 +13,8 @@ class ValesPages extends StatefulWidget {
   State<ValesPages> createState() => _ValesPagesState();
 }
 
-class _ValesPagesState extends State<ValesPages> {
+class _ValesPagesState extends State<ValesPages>
+    with AutomaticKeepAliveClientMixin {
   final _customRoute = CustomRouteTransition();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
@@ -39,6 +40,7 @@ class _ValesPagesState extends State<ValesPages> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: [
         Expanded(
@@ -161,4 +163,7 @@ class _ValesPagesState extends State<ValesPages> {
                                           Constants.textStyleParagraphError))));
                 })));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
