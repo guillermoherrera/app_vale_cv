@@ -1,3 +1,4 @@
+import 'package:app_vale_cv/pages/vales/vale_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:app_vale_cv/helpers/constants.dart';
 import 'package:app_vale_cv/pages/clientes/cliente_page.dart';
@@ -22,9 +23,13 @@ class CustomRouteTransition {
   }
 
   Widget _getPage(String ruta) {
-    if (ruta == Constants.pageCliente) {
-      return const ClientePage();
+    switch (ruta) {
+      case Constants.pageCliente:
+        return const ClientePage();
+      case Constants.pageVale:
+        return const ValePage();
+      default:
+        return const RootPage();
     }
-    return const RootPage();
   }
 }

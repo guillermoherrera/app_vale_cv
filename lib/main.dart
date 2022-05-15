@@ -1,5 +1,6 @@
 import 'package:app_vale_cv/bloc/user/user_bloc.dart';
 import 'package:app_vale_cv/pages/clientes/cliente_page.dart';
+import 'package:app_vale_cv/pages/vales/vale_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_vale_cv/Pages/root_page.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         routes: {
           Constants.pageRoot: (BuildContext context) => const RootPage(),
           Constants.pageCliente: (BuildContext context) => const ClientePage(),
+          Constants.pageVale: (BuildContext context) => const ValePage(),
         },
       ),
     );

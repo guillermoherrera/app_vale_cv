@@ -19,14 +19,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
       centerTitle: true,
       title: Column(
         children: const [
-          Hero(
+          /*Hero(
               tag: 'Logo',
-              child: Image(
-                image: AssetImage(Constants.assetsImagelogo),
-                height: 60,
-                color: Constants.colorDefault,
-                fit: BoxFit.contain,
-              )),
+              child:*/
+          Image(
+            image: AssetImage(Constants.assetsImagelogo),
+            height: 60,
+            color: Constants.colorDefault,
+            fit: BoxFit.contain,
+          ) /*)*/,
           Text(
             'v1.0',
             style: Constants.textStyleParagraphDefault,

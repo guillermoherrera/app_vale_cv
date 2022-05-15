@@ -1,6 +1,7 @@
 import 'package:app_vale_cv/helpers/constants.dart';
 import 'package:flutter/material.dart';
 
+import '../../helpers/custom_route_transition.dart';
 import '../../widgets/animator.dart';
 import '../../widgets/custom_list_tile.dart';
 import '../../widgets/custom_loading.dart';
@@ -13,6 +14,7 @@ class ValesPages extends StatefulWidget {
 }
 
 class _ValesPagesState extends State<ValesPages> {
+  final _customRoute = CustomRouteTransition();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   List<int> _vales = [];
@@ -74,7 +76,7 @@ class _ValesPagesState extends State<ValesPages> {
   Widget _noData() {
     return const Center(
         child: Text(
-      'Sin clientes',
+      'SIN CLIENTES',
       style: Constants.textStyleSubTitle,
     ));
   }
@@ -130,8 +132,10 @@ class _ValesPagesState extends State<ValesPages> {
                   return WidgetAnimator(
                       child: GestureDetector(
                           onTap: () {
-                            // ignore: avoid_print
-                            print('print');
+                            Navigator.push(
+                                context,
+                                _customRoute
+                                    .createRutaSlide(Constants.pageVale));
                           },
                           child: CustomListTile(
                               title: Text('NOMBRE CLIENTE ${index + 1}',
@@ -140,6 +144,8 @@ class _ValesPagesState extends State<ValesPages> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text('01/01/2001 00:0${index + 1} am',
+                                      style: Constants.textStyleParagraph),
+                                  const Text('\$1000.00',
                                       style: Constants.textStyleParagraph),
                                 ],
                               ),
