@@ -28,7 +28,7 @@ class _DestinoPageState extends State<DestinoPage> {
       setState(() {
         _withInfo = true;
         _cargando = false;
-        _destinos = [1, 2, 3];
+        _destinos = [1, 2, 3, 4];
       });
     }
   }
@@ -173,32 +173,45 @@ class _DestinoPageState extends State<DestinoPage> {
         child: MediaQuery.removePadding(
             context: context,
             removeTop: true,
-            child: ListView.builder(
-                itemCount: _destinos.length,
-                itemBuilder: (_, index) {
-                  if (index == _destinos.length) {
-                    return const SizedBox(height: 50.0);
-                  }
+            child: Wrap(
+                alignment: WrapAlignment.center,
+                children: _destinos.map((box) {
                   return WidgetAnimator(
-                      child: GestureDetector(
-                          onTap: () {},
-                          child: CustomListTile(
-                              title: Text(index == 0 ? 'EDUCACION' : 'SALUD',
-                                  style: Constants.textStyleSubTitle),
-                              subTitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text('', style: Constants.textStyleParagraph),
-                                  Text('', style: Constants.textStyleParagraph),
-                                ],
-                              ),
-                              leading: const Icon(
-                                  Icons.directions_walk_outlined,
-                                  color: Constants.colorDefaultText),
-                              trailing: const Icon(
-                                Icons.arrow_forward_ios,
-                                color: Constants.colorDefaultText,
-                              ))));
-                })));
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            _customRoute
+                                .createRutaSlide(Constants.pageDestinos));
+                      },
+                      child: Container(
+                          margin: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(3),
+                          //color: Constants.colorDefault,
+                          alignment: Alignment.center,
+                          height: 100,
+                          width: 100,
+                          child: FittedBox(
+                            child: Text(
+                              box == 1
+                                  ? 'SALUD'
+                                  : box == 2
+                                      ? 'EDUCACIÓN'
+                                      : box == 3
+                                          ? 'TRABAJO'
+                                          : 'OTROS',
+                              style: Constants.textStyleSubTitle,
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                              color: Constants.colorDefault,
+                              border: Border.all(
+                                  color: Constants.colorDefaultText,
+                                  width: 3.0),
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(25.0)))),
+                    ),
+                  );
+                }).toList())));
   }
 }

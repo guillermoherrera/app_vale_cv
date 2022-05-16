@@ -28,7 +28,7 @@ class _PlazosPageState extends State<PlazosPage> {
       setState(() {
         _withInfo = true;
         _cargando = false;
-        _plazos = [1, 2, 3, 4];
+        _plazos = [0, 1, 2, 3, 4];
       });
     }
   }
@@ -147,6 +147,38 @@ class _PlazosPageState extends State<PlazosPage> {
             style: Constants.textStyleTitle,
             textAlign: TextAlign.center,
           ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(10.0),
+          child: const Text(
+            '\$1000.00',
+            style: Constants.textStyleTitle,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text(
+                  'PAGO QUINCENAL:',
+                  style: Constants.textStyleSubTitle,
+                ),
+                Text(
+                  '\$125.00',
+                  style: Constants.textStyleSubTitle,
+                )
+              ]),
+        ),
+        const Divider(),
+        Container(
+          padding: const EdgeInsets.all(10.0),
+          child: const Text(
+            'QUINCENAS',
+            style: Constants.textStyleSubTitle,
+            textAlign: TextAlign.center,
+          ),
         )
       ],
     );
@@ -173,36 +205,36 @@ class _PlazosPageState extends State<PlazosPage> {
         child: MediaQuery.removePadding(
             context: context,
             removeTop: true,
-            child: ListView.builder(
-                itemCount: _plazos.length,
-                itemBuilder: (_, index) {
-                  if (index == _plazos.length) {
-                    return const SizedBox(height: 50.0);
-                  }
+            child: Wrap(
+                alignment: WrapAlignment.center,
+                children: _plazos.map((box) {
                   return WidgetAnimator(
-                      child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                _customRoute
-                                    .createRutaSlide(Constants.pageDestinos));
-                          },
-                          child: CustomListTile(
-                              title: Text('${index * 2 + 4}',
-                                  style: Constants.textStyleSubTitle),
-                              subTitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text('', style: Constants.textStyleParagraph),
-                                  Text('', style: Constants.textStyleParagraph),
-                                ],
-                              ),
-                              leading: const Icon(Icons.calendar_month_outlined,
-                                  color: Constants.colorDefaultText),
-                              trailing: const Icon(
-                                Icons.arrow_forward_ios,
-                                color: Constants.colorDefaultText,
-                              ))));
-                })));
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            _customRoute
+                                .createRutaSlide(Constants.pageDestinos));
+                      },
+                      child: Container(
+                          margin: const EdgeInsets.all(10),
+                          //color: Constants.colorDefault,
+                          alignment: Alignment.center,
+                          height: 100,
+                          width: 100,
+                          child: Text(
+                            '${box * 2 + 4}',
+                            style: Constants.textStyleSubTitle,
+                          ),
+                          decoration: BoxDecoration(
+                              color: Constants.colorDefault,
+                              border: Border.all(
+                                  color: Constants.colorDefaultText,
+                                  width: 3.0),
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(25.0)))),
+                    ),
+                  );
+                }).toList())));
   }
 }
