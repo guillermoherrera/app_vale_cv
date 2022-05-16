@@ -1,3 +1,4 @@
+import 'package:app_vale_cv/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 
 import '../../helpers/constants.dart';
@@ -15,7 +16,9 @@ class DestinoPage extends StatefulWidget {
 }
 
 class _DestinoPageState extends State<DestinoPage> {
+  final _customSnakBar = CustomSnackbar();
   final _customRoute = CustomRouteTransition();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   bool _cargando = true;
@@ -39,9 +42,18 @@ class _DestinoPageState extends State<DestinoPage> {
     super.initState();
   }
 
+  _selected() {
+    if (mounted) {
+      SnackBar snackBar = _customSnakBar
+          .error('HA OCURRIDO UN ERROR AL SELECCIONAR EL MOTIVO DEL PRESTAMO');
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: _appBar(),
       backgroundColor: Constants.colorPrimary,
       body: _body(),
@@ -179,10 +191,7 @@ class _DestinoPageState extends State<DestinoPage> {
                   return WidgetAnimator(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            _customRoute
-                                .createRutaSlide(Constants.pageDestinos));
+                        _selected();
                       },
                       child: Container(
                           margin: const EdgeInsets.all(10),
