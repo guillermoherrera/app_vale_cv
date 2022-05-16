@@ -19,6 +19,7 @@ class Constants {
   static const String pageCliente = 'cliente';
   static const String pageVale = 'vale';
   static const String pageDesembolso = 'desembolso';
+  static const String pagePlazos = 'plazo';
 
   //Assets
   static const String assetsImagelogo = 'assets/logoConfia.png';

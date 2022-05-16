@@ -7,20 +7,20 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_list_tile.dart';
 import '../../widgets/custom_loading.dart';
 
-class DesembolsoPage extends StatefulWidget {
-  const DesembolsoPage({Key? key}) : super(key: key);
+class PlazosPage extends StatefulWidget {
+  const PlazosPage({Key? key}) : super(key: key);
 
   @override
-  State<DesembolsoPage> createState() => _DesembolsoPageState();
+  State<PlazosPage> createState() => _PlazosPageState();
 }
 
-class _DesembolsoPageState extends State<DesembolsoPage> {
+class _PlazosPageState extends State<PlazosPage> {
   final _customRoute = CustomRouteTransition();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   bool _cargando = true;
   bool _withInfo = false;
-  List<int> _desembolsos = [];
+  List<int> _plazos = [];
 
   _getData() async {
     await Future.delayed(const Duration(seconds: 1));
@@ -28,7 +28,7 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
       setState(() {
         _withInfo = true;
         _cargando = false;
-        _desembolsos = [1, 2, 3];
+        _plazos = [1, 2, 3, 4];
       });
     }
   }
@@ -82,7 +82,7 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
         key: _refreshKey,
         child: _cargando
             ? const CustomLoading(
-                label: 'CARGANDO DATOS DE DESEMBOLSOS...',
+                label: 'CARGANDO DATOS DE PLAZOS E IMPORTES...',
               )
             : _showResult(),
         // ignore: avoid_print
@@ -143,7 +143,7 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
         Container(
           padding: const EdgeInsets.all(10.0),
           child: const Text(
-            'SELECCIONA EL TIPO DE DESEMBOLSO',
+            'CALCULA TU VALE',
             style: Constants.textStyleTitle,
             textAlign: TextAlign.center,
           ),
@@ -174,9 +174,9 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
             context: context,
             removeTop: true,
             child: ListView.builder(
-                itemCount: _desembolsos.length,
+                itemCount: _plazos.length,
                 itemBuilder: (_, index) {
-                  if (index == _desembolsos.length) {
+                  if (index == _plazos.length) {
                     return const SizedBox(height: 50.0);
                   }
                   return WidgetAnimator(
@@ -185,27 +185,19 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
                             Navigator.push(
                                 context,
                                 _customRoute
-                                    .createRutaSlide(Constants.pagePlazos));
+                                    .createRutaSlide(Constants.pageCliente));
                           },
                           child: CustomListTile(
-                              title: Text(
-                                  index == 0
-                                      ? 'DEPOSITO BANCARIO'
-                                      : 'FOLIO DIGITAL',
+                              title: Text('${index * 2 + 4}',
                                   style: Constants.textStyleSubTitle),
                               subTitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(index == 0 ? 'BANAMEX' : '',
-                                      style: Constants.textStyleParagraph),
-                                  Text(
-                                      index == 0
-                                          ? '**** **** **** 1234'
-                                          : 'EN SUCURSAL',
-                                      style: Constants.textStyleParagraph),
+                                children: const [
+                                  Text('', style: Constants.textStyleParagraph),
+                                  Text('', style: Constants.textStyleParagraph),
                                 ],
                               ),
-                              leading: const Icon(Icons.credit_card,
+                              leading: const Icon(Icons.calendar_month_outlined,
                                   color: Constants.colorDefaultText),
                               trailing: const Icon(
                                 Icons.arrow_forward_ios,
