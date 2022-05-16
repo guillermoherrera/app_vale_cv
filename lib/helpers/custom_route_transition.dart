@@ -1,3 +1,4 @@
+import 'package:app_vale_cv/pages/vales/desembolso.dart';
 import 'package:app_vale_cv/pages/vales/vale_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:app_vale_cv/helpers/constants.dart';
@@ -28,6 +29,8 @@ class CustomRouteTransition {
         return const ClientePage();
       case Constants.pageVale:
         return const ValePage();
+      case Constants.pageDesembolso:
+        return const DesembolsoPage();
       default:
         return const RootPage();
     }

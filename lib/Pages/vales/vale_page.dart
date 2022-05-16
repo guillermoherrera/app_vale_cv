@@ -100,16 +100,15 @@ class _ValePageState extends State<ValePage> {
   Widget _listFill() {
     return Column(
       children: [
-        _FillHeader(),
-        _ClienteInfo(),
+        _fillHeader(),
+        _clienteInfo(),
         _infoGeneral(),
-        _EstadoCuenta(),
+        _estadoCuenta(),
       ],
     );
   }
 
-  // ignore: non_constant_identifier_names
-  Widget _FillHeader() {
+  Widget _fillHeader() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: Table(
@@ -159,8 +158,7 @@ class _ValePageState extends State<ValePage> {
     ]);
   }
 
-  // ignore: non_constant_identifier_names
-  Widget _ClienteInfo() {
+  Widget _clienteInfo() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
       child: Column(
@@ -248,8 +246,7 @@ class _ValePageState extends State<ValePage> {
     );
   }
 
-  // ignore: non_constant_identifier_names
-  Widget _EstadoCuenta() {
+  Widget _estadoCuenta() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: Column(

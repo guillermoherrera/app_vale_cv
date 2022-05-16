@@ -7,6 +7,8 @@ import 'package:app_vale_cv/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../helpers/custom_route_transition.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -16,11 +18,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+  final _customRoute = CustomRouteTransition();
   TabController? _tabController;
+  int tabIndex = 0;
 
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
+    _tabController?.addListener(() {
+      setState(() {
+        tabIndex = _tabController!.index;
+      });
+    });
     super.initState();
   }
 
@@ -61,15 +70,37 @@ class _HomePageState extends State<HomePage>
       preferredSize: const Size.fromHeight(100),
       child: CustomAppBar(
         actions: [
-          IconButton(
-              onPressed: () {
-                BlocProvider.of<UserBloc>(context, listen: false)
-                    .add(DeleteUserEvent());
-              },
-              icon: const Icon(
-                Icons.logout,
-                color: Constants.colorDefault,
-              ))
+          tabIndex == 0
+              ? IconButton(
+                  onPressed: () {
+                    BlocProvider.of<UserBloc>(context, listen: false)
+                        .add(DeleteUserEvent());
+                  },
+                  icon: const Icon(
+                    Icons.logout,
+                    color: Constants.colorDefault,
+                  ))
+              : tabIndex == 1
+                  ? IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            _customRoute
+                                .createRutaSlide(Constants.pageDesembolso));
+                      },
+                      icon: const Icon(
+                        Icons.add,
+                        color: Constants.colorDefault,
+                      ))
+                  : IconButton(
+                      onPressed: () {
+                        BlocProvider.of<UserBloc>(context, listen: false)
+                            .add(DeleteUserEvent());
+                      },
+                      icon: const Icon(
+                        Icons.person_add,
+                        color: Constants.colorDefault,
+                      ))
         ],
       ),
     );
