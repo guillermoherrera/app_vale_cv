@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:app_vale_cv/widgets/custom_elevated_button.dart';
 import '../../helpers/constants.dart';
+import '../../helpers/custom_route_transition.dart';
 
 class InicioPage extends StatefulWidget {
   const InicioPage({Key? key}) : super(key: key);
@@ -12,6 +13,7 @@ class InicioPage extends StatefulWidget {
 
 class _InicioPageState extends State<InicioPage>
     with AutomaticKeepAliveClientMixin {
+  final _customRoute = CustomRouteTransition();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   DateTime _dateGet = DateTime.now();
@@ -262,7 +264,10 @@ class _InicioPageState extends State<InicioPage>
               children: [
                 CustomElevatedButton(
                   label: 'NUEVO VALE',
-                  action: () {},
+                  action: () {
+                    Navigator.push(context,
+                        _customRoute.createRutaSlide(Constants.pageDesembolso));
+                  },
                   primaryColor: Constants.colorDefault,
                   textColor: Constants.colorPrimary,
                   borderColor: Constants.colorPrimary,

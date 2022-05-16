@@ -7,20 +7,20 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_list_tile.dart';
 import '../../widgets/custom_loading.dart';
 
-class PlazosPage extends StatefulWidget {
-  const PlazosPage({Key? key}) : super(key: key);
+class DestinoPage extends StatefulWidget {
+  const DestinoPage({Key? key}) : super(key: key);
 
   @override
-  State<PlazosPage> createState() => _PlazosPageState();
+  State<DestinoPage> createState() => _DestinoPageState();
 }
 
-class _PlazosPageState extends State<PlazosPage> {
+class _DestinoPageState extends State<DestinoPage> {
   final _customRoute = CustomRouteTransition();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   bool _cargando = true;
   bool _withInfo = false;
-  List<int> _plazos = [];
+  List<int> _destinos = [];
 
   _getData() async {
     await Future.delayed(const Duration(seconds: 1));
@@ -28,7 +28,7 @@ class _PlazosPageState extends State<PlazosPage> {
       setState(() {
         _withInfo = true;
         _cargando = false;
-        _plazos = [1, 2, 3, 4];
+        _destinos = [1, 2, 3];
       });
     }
   }
@@ -82,7 +82,7 @@ class _PlazosPageState extends State<PlazosPage> {
         key: _refreshKey,
         child: _cargando
             ? const CustomLoading(
-                label: 'CARGANDO DATOS DE PLAZOS E IMPORTES...',
+                label: 'CARGANDO DATOS DE DESTINOS...',
               )
             : _showResult(),
         // ignore: avoid_print
@@ -143,7 +143,7 @@ class _PlazosPageState extends State<PlazosPage> {
         Container(
           padding: const EdgeInsets.all(10.0),
           child: const Text(
-            'CALCULA TU VALE',
+            'SELECCIONA EL MOTIVO DEL PRESTAMO',
             style: Constants.textStyleTitle,
             textAlign: TextAlign.center,
           ),
@@ -174,21 +174,16 @@ class _PlazosPageState extends State<PlazosPage> {
             context: context,
             removeTop: true,
             child: ListView.builder(
-                itemCount: _plazos.length,
+                itemCount: _destinos.length,
                 itemBuilder: (_, index) {
-                  if (index == _plazos.length) {
+                  if (index == _destinos.length) {
                     return const SizedBox(height: 50.0);
                   }
                   return WidgetAnimator(
                       child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                _customRoute
-                                    .createRutaSlide(Constants.pageDestinos));
-                          },
+                          onTap: () {},
                           child: CustomListTile(
-                              title: Text('${index * 2 + 4}',
+                              title: Text(index == 0 ? 'EDUCACION' : 'SALUD',
                                   style: Constants.textStyleSubTitle),
                               subTitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +192,8 @@ class _PlazosPageState extends State<PlazosPage> {
                                   Text('', style: Constants.textStyleParagraph),
                                 ],
                               ),
-                              leading: const Icon(Icons.calendar_month_outlined,
+                              leading: const Icon(
+                                  Icons.directions_walk_outlined,
                                   color: Constants.colorDefaultText),
                               trailing: const Icon(
                                 Icons.arrow_forward_ios,
