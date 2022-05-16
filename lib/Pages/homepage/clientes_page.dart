@@ -1,6 +1,7 @@
-import 'package:app_vale_cv/widgets/custom_loading.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../helpers/constants.dart';
+import 'package:app_vale_cv/widgets/custom_loading.dart';
 import 'package:app_vale_cv/widgets/custom_list_tile.dart';
 import 'package:app_vale_cv/widgets/animator.dart';
 import 'package:app_vale_cv/helpers/custom_route_transition.dart';
@@ -19,6 +20,7 @@ class _ClientesPageState extends State<ClientesPage>
       GlobalKey<RefreshIndicatorState>();
   List<int> _clientes = [];
   bool _cargando = true;
+  DateTime _dateGet = DateTime.now();
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _ClientesPageState extends State<ClientesPage>
       setState(() {
         _clientes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         _cargando = false;
+        _dateGet = DateTime.now();
       });
     }
   }
@@ -103,9 +106,12 @@ class _ClientesPageState extends State<ClientesPage>
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text('CLIENTES', style: Constants.textStyleSubTitle),
-              Text('REGISTRADOS', style: Constants.textStyleParagraph)
+            children: [
+              const Text('CLIENTES', style: Constants.textStyleSubTitle),
+              const Text('ULTIMA ACTUALIZACIÓN',
+                  style: Constants.textStyleParagraph),
+              Text(DateFormat('dd/MM/yyyy  kk:mm:ss').format(_dateGet),
+                  style: Constants.textStyleParagraph),
             ],
           ),
           Column(
@@ -139,7 +145,8 @@ class _ClientesPageState extends State<ClientesPage>
                                     .createRutaSlide(Constants.pageCliente));
                           },
                           child: CustomListTile(
-                              title: Text('NOMBRE CLIENTE ${index + 1}',
+                              title: Text(
+                                  'NOMBRE COMPLETO DEL CLIENTE ${index + 1}',
                                   style: Constants.textStyleStandard),
                               subTitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,7 +161,7 @@ class _ClientesPageState extends State<ClientesPage>
                                   color: Constants.colorDefaultText),
                               trailing: index % 3 != 0
                                   ? const Text(
-                                      'SITUACIÓN NORMAL',
+                                      'SITUACIÓN\nNORMAL',
                                       style: Constants.textStyleParagraph,
                                     )
                                   : const Text('BLOQUEADO',

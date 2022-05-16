@@ -1,6 +1,6 @@
-import 'package:app_vale_cv/helpers/constants.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
+import 'package:app_vale_cv/helpers/constants.dart';
 import '../../helpers/custom_route_transition.dart';
 import '../../widgets/animator.dart';
 import '../../widgets/custom_list_tile.dart';
@@ -20,6 +20,7 @@ class _ValesPagesState extends State<ValesPages>
       GlobalKey<RefreshIndicatorState>();
   List<int> _vales = [];
   bool _cargando = true;
+  DateTime _dateGet = DateTime.now();
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _ValesPagesState extends State<ValesPages>
       setState(() {
         _vales = [1, 2];
         _cargando = false;
+        _dateGet = DateTime.now();
       });
     }
   }
@@ -104,15 +106,21 @@ class _ValesPagesState extends State<ValesPages>
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text('VALES', style: Constants.textStyleSubTitle),
-              Text('REGISTRADOS', style: Constants.textStyleParagraph)
+            children: [
+              const Text('VALES', style: Constants.textStyleSubTitle),
+              const Text('ULTIMA ACTUALIZACIÓN',
+                  style: Constants.textStyleParagraph),
+              Text(DateFormat('dd/MM/yyyy  kk:mm:ss').format(_dateGet),
+                  style: Constants.textStyleParagraph)
             ],
           ),
           Column(
             children: [
               const Icon(Icons.person, color: Constants.colorDefaultText),
-              Text('${_vales.length}', style: Constants.textStyleStandard)
+              Text(
+                '${_vales.length}',
+                style: Constants.textStyleStandard,
+              ),
             ],
           )
         ],
@@ -140,7 +148,8 @@ class _ValesPagesState extends State<ValesPages>
                                     .createRutaSlide(Constants.pageVale));
                           },
                           child: CustomListTile(
-                              title: Text('NOMBRE CLIENTE ${index + 1}',
+                              title: Text(
+                                  'NOMBRE COMPLETO DEL CLIENTE ${index + 1}',
                                   style: Constants.textStyleStandard),
                               subTitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

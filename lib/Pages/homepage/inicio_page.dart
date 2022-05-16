@@ -1,6 +1,6 @@
-import 'package:app_vale_cv/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
+import 'package:app_vale_cv/widgets/custom_elevated_button.dart';
 import '../../helpers/constants.dart';
 
 class InicioPage extends StatefulWidget {
@@ -12,19 +12,36 @@ class InicioPage extends StatefulWidget {
 
 class _InicioPageState extends State<InicioPage>
     with AutomaticKeepAliveClientMixin {
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  DateTime _dateGet = DateTime.now();
+
+  _getData() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (mounted) {
+      setState(() {
+        _dateGet = DateTime.now();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          //_colocaGana(),
-          _miSaldo(),
-          _saldoDetalle(),
-          _nuevoCredito(),
-          _resumenRelacion(),
-          _relacion()
-        ],
+    return RefreshIndicator(
+      key: _refreshKey,
+      onRefresh: () => _getData(),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            //_colocaGana(),
+            _miSaldo(),
+            _saldoDetalle(),
+            _nuevoCredito(),
+            _resumenRelacion(),
+            _relacion()
+          ],
+        ),
       ),
     );
   }
@@ -105,10 +122,11 @@ class _InicioPageState extends State<InicioPage>
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: const [
-                  Text('ULTIMA ACTUALIZACIÓN',
+                children: [
+                  const Text('ULTIMA ACTUALIZACIÓN',
                       style: Constants.textStyleParagraph),
-                  Text('01/01/01 00:00 AM', style: Constants.textStyleParagraph)
+                  Text(DateFormat('dd/MM/yyyy  kk:mm:ss').format(_dateGet),
+                      style: Constants.textStyleParagraph)
                 ],
               )),
           _tableRow(
@@ -371,9 +389,9 @@ class _InicioPageState extends State<InicioPage>
                     ],
                   ),
                 ),
-                const Center(
+                Center(
                   child: Text(
-                    'ÚLTIMA ACTIALIZACION 01/01/01 00:00 AM',
+                    'ÚLTIMA ACTIALIZACION ${DateFormat('dd/MM/yyyy  kk:mm:ss').format(_dateGet)}',
                     style: Constants.textStyleParagraph,
                   ),
                 )

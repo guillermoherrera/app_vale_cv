@@ -163,29 +163,49 @@ class _ValePageState extends State<ValePage> {
   Widget _ClienteInfo() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
-      child: GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context, _customRoute.createRutaSlide(Constants.pageCliente));
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Expanded(
+              flex: 8,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      _customRoute.createRutaSlide(Constants.pageCliente));
+                },
+                child: Row(
                   children: const [
-                    Text(
-                      'NOMBRE CLIENTE',
-                      style: Constants.textStyleSubTitle,
+                    Flexible(
+                      child: Text(
+                        'NOMBRE COMPLETO DEL CLIENTE SELECCIONADO',
+                        style: Constants.textStyleSubTitle,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    Center(child: Icon(Icons.call)),
-                  ]),
-              const Text(
-                '8711223344',
-                style: Constants.textStyleStandard,
+                    Icon(Icons.touch_app,
+                        color: Constants.colorDefaultText, size: 18)
+                  ],
+                ),
               ),
-            ],
-          )),
+            ),
+            Expanded(
+                flex: 2,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Icon(Icons.call),
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all(const CircleBorder()),
+                      backgroundColor: MaterialStateProperty.all(
+                          Constants.colorDefaultText)),
+                )),
+          ]),
+          const Text(
+            '8711223344',
+            style: Constants.textStyleStandard,
+          ),
+        ],
+      ),
     );
   }
 

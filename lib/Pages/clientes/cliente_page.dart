@@ -47,10 +47,12 @@ class _ClientePageState extends State<ClientePage> {
                 color: Colors.black, shape: BoxShape.circle),
           ),
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 10.0),
-            child: const Text(
-              'NOMBRE CLIENTE',
-              style: Constants.textStyleSubTitleDefault,
+            margin: const EdgeInsets.all(10.0),
+            child: const FittedBox(
+              child: Text(
+                'NOMBRE COMPLETO DEL CLIENTE SELECCIONADO',
+                style: Constants.textStyleSubTitleDefault,
+              ),
             ),
           )
         ],
@@ -79,23 +81,21 @@ class _ClientePageState extends State<ClientePage> {
         Container(
           padding: const EdgeInsets.all(10.0),
           child: Table(
-            children: const [
-              TableRow(children: [
-                Text('TELEFONO:', style: Constants.textStyleStandard),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child:
-                        Text('871-1223344', style: Constants.textStyleStandard))
-              ]),
-              TableRow(children: [
-                Text('DIRECCIÓN:', style: Constants.textStyleStandard),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                        'TAMAZULA #393 PARQUE INDUSTRIAL 35078 GOMEZ PALACIO, DURANGO',
-                        style: Constants.textStyleStandard,
-                        textAlign: TextAlign.end))
-              ])
+            children: [
+              _tableRow(
+                  const Text('TELEFONO:', style: Constants.textStyleStandard),
+                  const Align(
+                      alignment: Alignment.centerRight,
+                      child: Text('871-1223344',
+                          style: Constants.textStyleStandard))),
+              _tableRow(
+                  const Text('DIRECCIÓN:', style: Constants.textStyleStandard),
+                  const Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                          'TAMAZULA #393 PARQUE INDUSTRIAL 35078 GOMEZ PALACIO, DURANGO',
+                          style: Constants.textStyleStandard,
+                          textAlign: TextAlign.end)))
             ],
           ),
         )
@@ -111,44 +111,84 @@ class _ClientePageState extends State<ClientePage> {
         Container(
           padding: const EdgeInsets.all(10.0),
           child: Table(
-            children: const [
-              TableRow(children: [
-                Align(
-                    alignment: Alignment.center,
-                    child:
-                        Text('# DE VALE', style: Constants.textStyleSubTitle)),
-                Align(
-                    alignment: Alignment.center,
-                    child: Text('IMPORTE', style: Constants.textStyleSubTitle)),
-                Align(
-                    alignment: Alignment.center,
-                    child: Text('ESTADO', style: Constants.textStyleSubTitle))
-              ]),
-              TableRow(children: [
-                Text('#000000002', style: Constants.textStyleStandard),
-                Align(
+            children: [
+              _tableRowWithCenter(
+                  const Align(
+                      alignment: Alignment.center,
+                      child: Text('# DE VALE',
+                          style: Constants.textStyleSubTitle)),
+                  const Align(
+                      alignment: Alignment.center,
+                      child:
+                          Text('IMPORTE', style: Constants.textStyleSubTitle)),
+                  const Align(
+                      alignment: Alignment.center,
+                      child:
+                          Text('ESTADO', style: Constants.textStyleSubTitle))),
+              _tableRowWithCenter(
+                const Text('#000000002', style: Constants.textStyleStandard),
+                const Align(
                     alignment: Alignment.centerRight,
                     child:
                         Text('\$1000.00', style: Constants.textStyleStandard)),
-                Align(
+                const Align(
                     alignment: Alignment.center,
                     child: Text('ACTIVO', style: Constants.textStyleStandard)),
-              ]),
-              TableRow(children: [
-                Text('#000000001', style: Constants.textStyleStandard),
-                Align(
+              ),
+              _tableRowWithCenter(
+                const Text('#000000001', style: Constants.textStyleStandard),
+                const Align(
                     alignment: Alignment.centerRight,
                     child:
                         Text('\$1000.00', style: Constants.textStyleStandard)),
-                Align(
+                const Align(
                     alignment: Alignment.center,
                     child: Text('INACTIVO',
                         style: Constants.textStyleStandardError)),
-              ])
+              )
             ],
           ),
         )
       ],
     );
+  }
+
+  TableRow _tableRow(Widget _left, Widget _right) {
+    return TableRow(children: [
+      Container(
+        child: _left,
+        padding: const EdgeInsets.all(5.0),
+      ),
+      Container(
+        child: Align(
+          child: _right,
+          alignment: Alignment.centerRight,
+        ),
+        padding: const EdgeInsets.all(5.0),
+      ),
+    ]);
+  }
+
+  TableRow _tableRowWithCenter(Widget _left, Widget _center, Widget _right) {
+    return TableRow(children: [
+      Container(
+        child: _left,
+        padding: const EdgeInsets.all(5.0),
+      ),
+      Container(
+        child: Align(
+          child: _center,
+          alignment: Alignment.centerRight,
+        ),
+        padding: const EdgeInsets.all(5.0),
+      ),
+      Container(
+        child: Align(
+          child: _right,
+          alignment: Alignment.centerRight,
+        ),
+        padding: const EdgeInsets.all(5.0),
+      ),
+    ]);
   }
 }
