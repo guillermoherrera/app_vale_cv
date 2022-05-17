@@ -18,6 +18,7 @@ class Constants {
   static const String pageRoot = 'root';
   static const String pageCliente = 'cliente';
   static const String pageVale = 'vale';
+  static const String pageClientesVale = 'clientesVale';
   static const String pageDesembolso = 'desembolso';
   static const String pagePlazos = 'plazo';
   static const String pageDestinos = 'destino';

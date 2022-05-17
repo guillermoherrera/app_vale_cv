@@ -265,8 +265,10 @@ class _InicioPageState extends State<InicioPage>
                 CustomElevatedButton(
                   label: 'NUEVO VALE',
                   action: () {
-                    Navigator.push(context,
-                        _customRoute.createRutaSlide(Constants.pageDesembolso));
+                    Navigator.push(
+                        context,
+                        _customRoute
+                            .createRutaSlide(Constants.pageClientesVale));
                   },
                   primaryColor: Constants.colorDefault,
                   textColor: Constants.colorPrimary,

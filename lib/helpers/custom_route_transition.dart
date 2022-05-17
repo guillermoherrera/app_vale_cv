@@ -1,5 +1,6 @@
-import 'package:app_vale_cv/pages/vales/desembolso.dart';
-import 'package:app_vale_cv/pages/vales/destino.dart';
+import 'package:app_vale_cv/pages/vales/clientes_vale_page.dart';
+import 'package:app_vale_cv/pages/vales/desembolso_page.dart';
+import 'package:app_vale_cv/pages/vales/destino_page.dart';
 import 'package:app_vale_cv/pages/vales/plazos_page.dart';
 import 'package:app_vale_cv/pages/vales/vale_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,6 +32,8 @@ class CustomRouteTransition {
         return const ClientePage();
       case Constants.pageVale:
         return const ValePage();
+      case Constants.pageClientesVale:
+        return const ClientesValePage();
       case Constants.pageDesembolso:
         return const DesembolsoPage();
       case Constants.pagePlazos:
