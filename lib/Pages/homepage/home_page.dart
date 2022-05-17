@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../helpers/custom_route_transition.dart';
+import '../../widgets/custom_snackbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   final _customRoute = CustomRouteTransition();
+  final _customSnakBar = CustomSnackbar();
   TabController? _tabController;
   int tabIndex = 0;
 
@@ -94,8 +96,11 @@ class _HomePageState extends State<HomePage>
                       ))
                   : IconButton(
                       onPressed: () {
-                        BlocProvider.of<UserBloc>(context, listen: false)
-                            .add(DeleteUserEvent());
+                        if (mounted) {
+                          SnackBar snackBar = _customSnakBar.error(
+                              'HA OCURRIDO UN ERROR AL ABRIR EL FORMULARIO');
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
                       },
                       icon: const Icon(
                         Icons.person_add,

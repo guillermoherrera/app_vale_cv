@@ -1,3 +1,4 @@
+import 'package:app_vale_cv/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../helpers/constants.dart';
@@ -5,8 +6,8 @@ import '../../helpers/custom_route_transition.dart';
 import '../../widgets/animator.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_list_tile.dart';
-import '../../widgets/custom_loading.dart';
 import '../../widgets/custom_shimmer.dart';
+import '../../widgets/shake_transition.dart';
 
 class DesembolsoPage extends StatefulWidget {
   const DesembolsoPage({Key? key}) : super(key: key);
@@ -23,6 +24,7 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
   bool _cargando = true;
   bool _withInfo = false;
   List<int> _desembolsos = [];
+  int optSelected = -1;
 
   _getData() async {
     await Future.delayed(const Duration(seconds: 1));
@@ -33,6 +35,12 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
         _desembolsos = [1, 2, 3];
       });
     }
+  }
+
+  _optSelected(int opt) {
+    setState(() {
+      optSelected = opt;
+    });
   }
 
   @override
@@ -104,6 +112,7 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
       children: [
         _fillHeader(),
         _fillBody(),
+        optSelected > -1 ? _button() : Container()
       ],
     );
   }
@@ -180,35 +189,77 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
                   return WidgetAnimator(
                       child: GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                _customRoute
-                                    .createRutaSlide(Constants.pagePlazos));
+                            _optSelected(index);
                           },
                           child: CustomListTile(
                               title: Text(
                                   index == 0
                                       ? 'DEPOSITO BANCARIO'
                                       : 'FOLIO DIGITAL',
-                                  style: Constants.textStyleSubTitle),
+                                  style: optSelected == index
+                                      ? Constants.textStyleSubTitleAlternative
+                                      : Constants.textStyleSubTitle),
                               subTitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(index == 0 ? 'BANAMEX' : '',
-                                      style: Constants.textStyleParagraph),
+                                      style: optSelected == index
+                                          ? Constants
+                                              .textStyleParagraphAlternative
+                                          : Constants.textStyleParagraph),
                                   Text(
                                       index == 0
                                           ? '**** **** **** 1234'
                                           : 'EN SUCURSAL',
-                                      style: Constants.textStyleParagraph),
+                                      style: optSelected == index
+                                          ? Constants
+                                              .textStyleParagraphAlternative
+                                          : Constants.textStyleParagraph),
                                 ],
                               ),
-                              leading: const Icon(Icons.credit_card,
-                                  color: Constants.colorDefaultText),
-                              trailing: const Icon(
-                                Icons.arrow_forward_ios,
-                                color: Constants.colorDefaultText,
-                              ))));
+                              leading: Icon(Icons.credit_card,
+                                  color: optSelected == index
+                                      ? Constants.colorAlternative
+                                      : Constants.colorDefaultText),
+                              trailing: optSelected == index
+                                  ? const Icon(
+                                      Icons.check_box_outlined,
+                                      color: Constants.colorAlternative,
+                                    )
+                                  : const Icon(
+                                      Icons.check_box_outline_blank,
+                                      color: Constants.colorDefaultText,
+                                    ))));
                 })));
+  }
+
+  Widget _button() {
+    return ShakeTransition(
+      child: Container(
+          decoration: const BoxDecoration(
+              color: Constants.colorAlternative,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10.0),
+                topRight: Radius.circular(10.0),
+              )),
+          width: double.infinity,
+          height: 50,
+          child: ShakeTransition(
+            axis: Axis.vertical,
+            offset: 140.0,
+            duration: const Duration(milliseconds: 3000),
+            child: CustomElevatedButton(
+                action: () {
+                  Navigator.push(context,
+                      _customRoute.createRutaSlide(Constants.pagePlazos));
+                },
+                borderColor: Constants.colorAlternative,
+                primaryColor: Constants.colorAlternative,
+                textColor: Colors.white,
+                label:
+                    'SIGUIENTE' //'${!_enviando ? 'Guardar' : 'Enviando ...'}'
+                ),
+          )),
+    );
   }
 }

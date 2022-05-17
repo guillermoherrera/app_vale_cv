@@ -53,4 +53,15 @@ class Constants {
       fontWeight: FontWeight.bold, fontSize: 12.0, color: colorDefault);
   static const TextStyle textStyleParagraphDefault = TextStyle(
       fontWeight: FontWeight.bold, fontSize: 10.0, color: colorDefault);
+
+  static const TextStyle textStyleHeaderAlternative = TextStyle(
+      fontWeight: FontWeight.bold, fontSize: 40.0, color: colorAlternative);
+  static const TextStyle textStyleTitleAlternative = TextStyle(
+      fontWeight: FontWeight.bold, fontSize: 30.0, color: colorAlternative);
+  static const TextStyle textStyleSubTitleAlternative = TextStyle(
+      fontWeight: FontWeight.bold, fontSize: 18.0, color: colorAlternative);
+  static const TextStyle textStyleStandardAlternative = TextStyle(
+      fontWeight: FontWeight.bold, fontSize: 12.0, color: colorAlternative);
+  static const TextStyle textStyleParagraphAlternative = TextStyle(
+      fontWeight: FontWeight.bold, fontSize: 10.0, color: colorAlternative);
 }

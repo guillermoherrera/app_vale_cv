@@ -4,9 +4,11 @@ import '../../helpers/constants.dart';
 import '../../helpers/custom_route_transition.dart';
 import '../../widgets/animator.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_list_tile.dart';
 import '../../widgets/custom_loading.dart';
 import '../../widgets/custom_shimmer.dart';
+import '../../widgets/shake_transition.dart';
 
 class PlazosPage extends StatefulWidget {
   const PlazosPage({Key? key}) : super(key: key);
@@ -23,6 +25,7 @@ class _PlazosPageState extends State<PlazosPage> {
   bool _cargando = true;
   bool _withInfo = false;
   List<int> _plazos = [];
+  int optSelected = -1;
 
   _getData() async {
     await Future.delayed(const Duration(seconds: 1));
@@ -33,6 +36,12 @@ class _PlazosPageState extends State<PlazosPage> {
         _plazos = [0, 1, 2, 3, 4];
       });
     }
+  }
+
+  _optSelected(int opt) {
+    setState(() {
+      optSelected = opt;
+    });
   }
 
   @override
@@ -104,6 +113,7 @@ class _PlazosPageState extends State<PlazosPage> {
       children: [
         _fillHeader(),
         _fillBody(),
+        optSelected > -1 ? _button() : Container()
       ],
     );
   }
@@ -209,10 +219,7 @@ class _PlazosPageState extends State<PlazosPage> {
                   return WidgetAnimator(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            _customRoute
-                                .createRutaSlide(Constants.pageDestinos));
+                        _optSelected(box);
                       },
                       child: Container(
                           margin: const EdgeInsets.all(10),
@@ -222,17 +229,51 @@ class _PlazosPageState extends State<PlazosPage> {
                           width: 100,
                           child: Text(
                             '${box * 2 + 4}',
-                            style: Constants.textStyleSubTitle,
+                            style: optSelected == box
+                                ? Constants.textStyleSubTitleAlternative
+                                : Constants.textStyleSubTitle,
                           ),
                           decoration: BoxDecoration(
                               color: Constants.colorDefault,
                               border: Border.all(
-                                  color: Constants.colorDefaultText,
+                                  color: optSelected == box
+                                      ? Constants.colorAlternative
+                                      : Constants.colorDefaultText,
                                   width: 3.0),
                               borderRadius: const BorderRadius.all(
                                   Radius.circular(25.0)))),
                     ),
                   );
                 }).toList())));
+  }
+
+  Widget _button() {
+    return ShakeTransition(
+      child: Container(
+          decoration: const BoxDecoration(
+              color: Constants.colorAlternative,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10.0),
+                topRight: Radius.circular(10.0),
+              )),
+          width: double.infinity,
+          height: 50,
+          child: ShakeTransition(
+            axis: Axis.vertical,
+            offset: 140.0,
+            duration: const Duration(milliseconds: 3000),
+            child: CustomElevatedButton(
+                action: () {
+                  Navigator.push(context,
+                      _customRoute.createRutaSlide(Constants.pageDestinos));
+                },
+                borderColor: Constants.colorAlternative,
+                primaryColor: Constants.colorAlternative,
+                textColor: Colors.white,
+                label:
+                    'SIGUIENTE' //'${!_enviando ? 'Guardar' : 'Enviando ...'}'
+                ),
+          )),
+    );
   }
 }
