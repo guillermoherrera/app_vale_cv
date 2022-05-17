@@ -6,6 +6,7 @@ import '../../widgets/animator.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_list_tile.dart';
 import '../../widgets/custom_loading.dart';
+import '../../widgets/custom_shimmer.dart';
 
 class PlazosPage extends StatefulWidget {
   const PlazosPage({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class PlazosPage extends StatefulWidget {
 
 class _PlazosPageState extends State<PlazosPage> {
   final _customRoute = CustomRouteTransition();
+  final _customShimmer = CustomShimmer();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   bool _cargando = true;
@@ -80,11 +82,7 @@ class _PlazosPageState extends State<PlazosPage> {
   Widget _bodyContent() {
     return RefreshIndicator(
         key: _refreshKey,
-        child: _cargando
-            ? const CustomLoading(
-                label: 'CARGANDO DATOS DE PLAZOS E IMPORTES...',
-              )
-            : _showResult(),
+        child: _cargando ? _customShimmer.listWrap() : _showResult(),
         // ignore: avoid_print
         onRefresh: () async => print('lol'));
   }

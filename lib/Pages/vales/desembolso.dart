@@ -6,6 +6,7 @@ import '../../widgets/animator.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_list_tile.dart';
 import '../../widgets/custom_loading.dart';
+import '../../widgets/custom_shimmer.dart';
 
 class DesembolsoPage extends StatefulWidget {
   const DesembolsoPage({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class DesembolsoPage extends StatefulWidget {
 
 class _DesembolsoPageState extends State<DesembolsoPage> {
   final _customRoute = CustomRouteTransition();
+  final _customShimmer = CustomShimmer();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   bool _cargando = true;
@@ -80,11 +82,7 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
   Widget _bodyContent() {
     return RefreshIndicator(
         key: _refreshKey,
-        child: _cargando
-            ? const CustomLoading(
-                label: 'CARGANDO DATOS DE DESEMBOLSOS...',
-              )
-            : _showResult(),
+        child: _cargando ? _customShimmer.listTiles() : _showResult(),
         // ignore: avoid_print
         onRefresh: () async => print('lol'));
   }

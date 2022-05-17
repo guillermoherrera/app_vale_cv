@@ -1,3 +1,4 @@
+import 'package:app_vale_cv/widgets/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../helpers/constants.dart';
@@ -16,6 +17,7 @@ class ClientesPage extends StatefulWidget {
 class _ClientesPageState extends State<ClientesPage>
     with AutomaticKeepAliveClientMixin {
   final _customRoute = CustomRouteTransition();
+  final _customShimmer = CustomShimmer();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   List<int> _clientes = [];
@@ -30,7 +32,7 @@ class _ClientesPageState extends State<ClientesPage>
 
   _getClientes() async {
     _clientes.clear();
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 2));
     if (mounted) {
       setState(() {
         _clientes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -65,11 +67,7 @@ class _ClientesPageState extends State<ClientesPage>
   Widget _bodyContent() {
     return RefreshIndicator(
         key: _refreshKey,
-        child: _cargando
-            ? const CustomLoading(
-                label: 'CARGANDO CLIENTES...',
-              )
-            : _showResult(),
+        child: _cargando ? _customShimmer.listTiles() : _showResult(),
         onRefresh: () => _getClientes());
   }
 

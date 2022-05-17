@@ -5,6 +5,7 @@ import '../../helpers/custom_route_transition.dart';
 import '../../widgets/animator.dart';
 import '../../widgets/custom_list_tile.dart';
 import '../../widgets/custom_loading.dart';
+import '../../widgets/custom_shimmer.dart';
 
 class ValesPages extends StatefulWidget {
   const ValesPages({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class ValesPages extends StatefulWidget {
 class _ValesPagesState extends State<ValesPages>
     with AutomaticKeepAliveClientMixin {
   final _customRoute = CustomRouteTransition();
+  final _customShimmer = CustomShimmer();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   List<int> _vales = [];
@@ -30,7 +32,7 @@ class _ValesPagesState extends State<ValesPages>
 
   _getVales() async {
     _vales.clear();
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 2));
     if (mounted) {
       setState(() {
         _vales = [1, 2];
@@ -65,11 +67,7 @@ class _ValesPagesState extends State<ValesPages>
   Widget _bodyContent() {
     return RefreshIndicator(
         key: _refreshKey,
-        child: _cargando
-            ? const CustomLoading(
-                label: 'CARGANDO VALES...',
-              )
-            : _showResult(),
+        child: _cargando ? _customShimmer.listTiles() : _showResult(),
         onRefresh: () => _getVales());
   }
 

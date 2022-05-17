@@ -5,8 +5,7 @@ import '../../helpers/constants.dart';
 import '../../helpers/custom_route_transition.dart';
 import '../../widgets/animator.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/custom_list_tile.dart';
-import '../../widgets/custom_loading.dart';
+import '../../widgets/custom_shimmer.dart';
 
 class DestinoPage extends StatefulWidget {
   const DestinoPage({Key? key}) : super(key: key);
@@ -18,6 +17,7 @@ class DestinoPage extends StatefulWidget {
 class _DestinoPageState extends State<DestinoPage> {
   final _customSnakBar = CustomSnackbar();
   final _customRoute = CustomRouteTransition();
+  final _customShimmer = CustomShimmer();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
@@ -26,7 +26,7 @@ class _DestinoPageState extends State<DestinoPage> {
   List<int> _destinos = [];
 
   _getData() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 2));
     if (mounted) {
       setState(() {
         _withInfo = true;
@@ -92,11 +92,7 @@ class _DestinoPageState extends State<DestinoPage> {
   Widget _bodyContent() {
     return RefreshIndicator(
         key: _refreshKey,
-        child: _cargando
-            ? const CustomLoading(
-                label: 'CARGANDO DATOS DE DESTINOS...',
-              )
-            : _showResult(),
+        child: _cargando ? _customShimmer.listWrap() : _showResult(),
         // ignore: avoid_print
         onRefresh: () async => print('lol'));
   }

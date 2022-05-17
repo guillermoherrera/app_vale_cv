@@ -4,6 +4,7 @@ import '../../helpers/constants.dart';
 import '../../helpers/custom_route_transition.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_loading.dart';
+import '../../widgets/custom_shimmer.dart';
 
 class ValePage extends StatefulWidget {
   const ValePage({Key? key}) : super(key: key);
@@ -14,13 +15,14 @@ class ValePage extends StatefulWidget {
 
 class _ValePageState extends State<ValePage> {
   final _customRoute = CustomRouteTransition();
+  final _customShimmer = CustomShimmer();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   bool _cargando = true;
   bool _withInfo = false;
 
   _getInfo() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 2));
     if (mounted) {
       setState(() {
         _withInfo = true;
@@ -76,11 +78,7 @@ class _ValePageState extends State<ValePage> {
   Widget _bodyContent() {
     return RefreshIndicator(
         key: _refreshKey,
-        child: _cargando
-            ? const CustomLoading(
-                label: 'CARGANDO INFORMACIÓN DE VALE...',
-              )
-            : _showResult(),
+        child: _cargando ? _customShimmer.infoVale() : _showResult(),
         // ignore: avoid_print
         onRefresh: () async => print('lol'));
   }
