@@ -1,4 +1,3 @@
-import 'package:app_vale_cv/Pages/homepage/home_page.dart';
 import 'package:app_vale_cv/Pages/login/login_page.dart';
 import 'package:app_vale_cv/bloc/user/user_bloc.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-      return state.existUser ? const HomePage() : const LoginPage();
+      return const LoginPage();
     });
     //return !_isLogged ? const LoginPage() : const HomePage();
   }

@@ -2,12 +2,55 @@ import 'package:app_vale_cv/helpers/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomSnackbar {
-  success(String msj,
-      [IconData? icon = Icons.error_outline,
-      Duration? time = const Duration(seconds: 4),
-      SnackBarAction? action]) {
+  message({
+    required String msj,
+    IconData? icon = Icons.error_outline,
+    Duration? time = const Duration(seconds: 4),
+    SnackBarAction? action,
+    backGroundColor = Constants.colorDefaultText,
+    loading = false,
+  }) {
     return SnackBar(
-        backgroundColor: Constants.colorDefaultText,
+        backgroundColor: backGroundColor,
+        duration: time!,
+        content: Row(
+          children: [
+            Icon(
+              icon,
+              color: Constants.colorDefault,
+            ),
+            const SizedBox(
+              width: 20.0,
+            ),
+            Expanded(
+              child: Wrap(
+                children: [
+                  Text(
+                    msj.toUpperCase(),
+                    style: Constants.textStyleStandardDefault,
+                  )
+                ],
+              ),
+            ),
+            loading
+                ? const CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Constants.colorDefault),
+                  )
+                : const Text('')
+          ],
+        ));
+  }
+
+  error({
+    required String msj,
+    IconData? icon = Icons.error_outline,
+    Duration? time = const Duration(seconds: 4),
+    SnackBarAction? action,
+    backGroundColor = Colors.pink,
+  }) {
+    return SnackBar(
+        backgroundColor: backGroundColor,
         duration: time!,
         content: Row(
           children: [
@@ -32,44 +75,16 @@ class CustomSnackbar {
         ));
   }
 
-  error(String msj,
-      [IconData? icon = Icons.error_outline,
-      Duration? time = const Duration(seconds: 4),
-      SnackBarAction? action]) {
+  success({
+    required String msj,
+    String? msjSub = '',
+    IconData? icon = Icons.message_outlined,
+    Duration? time = const Duration(seconds: 4),
+    SnackBarAction? action,
+    backGroundColor = Constants.colorPrimary,
+  }) {
     return SnackBar(
-        backgroundColor: Colors.pink,
-        duration: time!,
-        content: Row(
-          children: [
-            Icon(
-              icon,
-              color: Constants.colorDefault,
-            ),
-            const SizedBox(
-              width: 20.0,
-            ),
-            Expanded(
-              child: Wrap(
-                children: [
-                  Text(
-                    msj.toUpperCase(),
-                    style: Constants.textStyleStandardDefault,
-                  )
-                ],
-              ),
-            )
-          ],
-        ));
-  }
-
-  message(String msj,
-      [String? msjSub = '',
-      Color? color = Constants.colorPrimary,
-      IconData? icon = Icons.message_outlined,
-      Duration? time = const Duration(seconds: 4),
-      SnackBarAction? action]) {
-    return SnackBar(
-      backgroundColor: color,
+      backgroundColor: backGroundColor,
       duration: time!,
       content: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -95,7 +110,7 @@ class CustomSnackbar {
             ),
             Text(
               msjSub!.toUpperCase(),
-              textAlign: TextAlign.start,
+              textAlign: TextAlign.center,
               style: Constants.textStyleStandardDefault,
             ),
           ],

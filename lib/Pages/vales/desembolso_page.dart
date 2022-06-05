@@ -1,8 +1,12 @@
+import 'package:app_vale_cv/bloc/desembolsos/desembolsos_bloc.dart';
 import 'package:app_vale_cv/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/solicitud_credito/solicitud_credito_bloc.dart';
 import '../../helpers/constants.dart';
 import '../../helpers/custom_route_transition.dart';
+import '../../providers/api_cv.dart';
 import '../../widgets/animator.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_list_tile.dart';
@@ -22,22 +26,27 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   bool _cargando = true;
-  bool _withInfo = false;
-  List<int> _desembolsos = [];
   int optSelected = -1;
+  final _apiCV = ApiCV();
+  late SolicitudCreditoState _info;
 
   _getData() async {
     await Future.delayed(const Duration(seconds: 1));
+    SolicitudCreditoState solicitudCredito =
+        context.read<SolicitudCreditoBloc>().state;
+    await _apiCV.getDesembolsosTipos(context);
     if (mounted) {
       setState(() {
-        _withInfo = true;
+        _info = solicitudCredito;
         _cargando = false;
-        _desembolsos = [1, 2, 3];
       });
     }
   }
 
   _optSelected(int opt) {
+    final solicitudBloc =
+        BlocProvider.of<SolicitudCreditoBloc>(context, listen: false);
+    solicitudBloc.add(AddDesembolsoID(opt));
     setState(() {
       optSelected = opt;
     });
@@ -60,7 +69,7 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
 
   PreferredSize _appBar() {
     return const PreferredSize(
-      preferredSize: Size.fromHeight(100),
+      preferredSize: Size.fromHeight(80),
       child: CustomAppBar(),
     );
   }
@@ -92,26 +101,44 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
         key: _refreshKey,
         child: _cargando ? _customShimmer.listTiles() : _showResult(),
         // ignore: avoid_print
-        onRefresh: () async => print('lol'));
+        onRefresh: () async => _getData());
   }
 
   Widget _showResult() {
-    return _withInfo ? _listFill() : _noData();
+    return BlocBuilder<DesembolsosBloc, DesembolsosState>(
+        builder: (context, state) {
+      if (state.data!.desembolsos.isNotEmpty) {
+        return _listFill(state);
+      } else {
+        return _noData();
+      }
+    });
   }
 
   Widget _noData() {
-    return const Center(
-        child: Text(
-      'SIN INFORMACIÓN',
-      style: Constants.textStyleSubTitle,
-    ));
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        children: const [
+          SizedBox(
+            height: 600.0,
+            child: Center(
+                child: Text(
+              'SIN DESEMBOLSOS DISPONIBLES PARA ESTE CLIENTE',
+              style: Constants.textStyleSubTitle,
+              textAlign: TextAlign.center,
+            )),
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget _listFill() {
+  Widget _listFill(DesembolsosState state) {
     return Column(
       children: [
         _fillHeader(),
-        _fillBody(),
+        _fillBody(state),
         optSelected > -1 ? _button() : Container()
       ],
     );
@@ -127,8 +154,8 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
               _tableRow(
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: const Text(
-                      'NOMBRE COMPLETO DEL CLIENTE SELECCIONADO',
+                    child: Text(
+                      '${_info.data?.clienteNombre}',
                       style: Constants.textStyleStandard,
                     ),
                   ),
@@ -136,12 +163,14 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
               _tableRow(
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text('8711223344', style: Constants.textStyleParagraph),
-                    Text('ID #123456', style: Constants.textStyleParagraph)
+                  children: [
+                    Text('${_info.data?.clienteTelefono}',
+                        style: Constants.textStyleParagraph),
+                    Text('#${_info.data?.clienteID}',
+                        style: Constants.textStyleParagraph)
                   ],
                 ),
-                const Text('SITUACIÓN \n NORMAL',
+                Text('${_info.data?.clienteEstatusDesc}',
                     style: Constants.textStyleParagraph),
               ),
             ],
@@ -175,53 +204,61 @@ class _DesembolsoPageState extends State<DesembolsoPage> {
     ]);
   }
 
-  Widget _fillBody() {
+  Widget _fillBody(DesembolsosState state) {
     return Expanded(
         child: MediaQuery.removePadding(
             context: context,
             removeTop: true,
             child: ListView.builder(
-                itemCount: _desembolsos.length,
+                itemCount: state.data?.desembolsos.length,
                 itemBuilder: (_, index) {
-                  if (index == _desembolsos.length) {
+                  if (index == state.data?.desembolsos.length) {
                     return const SizedBox(height: 50.0);
                   }
                   return WidgetAnimator(
                       child: GestureDetector(
                           onTap: () {
-                            _optSelected(index);
+                            _optSelected(state
+                                .data?.desembolsos[index].desembolsoTipoId);
                           },
                           child: CustomListTile(
                               title: Text(
-                                  index == 0
-                                      ? 'DEPOSITO BANCARIO'
-                                      : 'FOLIO DIGITAL',
-                                  style: optSelected == index
+                                  '${state.data?.desembolsos[index].desembolsoTipoDesc}',
+                                  style: optSelected ==
+                                          state.data?.desembolsos[index]
+                                              .desembolsoTipoId
                                       ? Constants.textStyleSubTitleAlternative
                                       : Constants.textStyleSubTitle),
                               subTitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(index == 0 ? 'BANAMEX' : '',
-                                      style: optSelected == index
+                                  Text(
+                                      '${state.data?.desembolsos[index].nombreBanco == '' ? '' : state.data?.desembolsos[index].nombreBanco}',
+                                      style: optSelected ==
+                                              state.data?.desembolsos[index]
+                                                  .desembolsoTipoId
                                           ? Constants
                                               .textStyleParagraphAlternative
                                           : Constants.textStyleParagraph),
                                   Text(
-                                      index == 0
-                                          ? '**** **** **** 1234'
-                                          : 'EN SUCURSAL',
-                                      style: optSelected == index
+                                      '${state.data?.desembolsos[index].numeroTarjeta == '' ? '' : state.data?.desembolsos[index].numeroTarjeta}',
+                                      style: optSelected ==
+                                              state.data?.desembolsos[index]
+                                                  .desembolsoTipoId
                                           ? Constants
                                               .textStyleParagraphAlternative
                                           : Constants.textStyleParagraph),
                                 ],
                               ),
                               leading: Icon(Icons.credit_card,
-                                  color: optSelected == index
+                                  color: optSelected ==
+                                          state.data?.desembolsos[index]
+                                              .desembolsoTipoId
                                       ? Constants.colorAlternative
                                       : Constants.colorDefaultText),
-                              trailing: optSelected == index
+                              trailing: optSelected ==
+                                      state.data?.desembolsos[index]
+                                          .desembolsoTipoId
                                   ? const Icon(
                                       Icons.check_box_outlined,
                                       color: Constants.colorAlternative,

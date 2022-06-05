@@ -1,14 +1,19 @@
-import 'package:app_vale_cv/bloc/user/user_bloc.dart';
 import 'package:app_vale_cv/helpers/constants.dart';
 import 'package:app_vale_cv/pages/homepage/clientes_page.dart';
 import 'package:app_vale_cv/pages/homepage/inicio_page.dart';
 import 'package:app_vale_cv/pages/homepage/vales_page.dart';
+import 'package:app_vale_cv/providers/api_cv.dart';
+
 import 'package:app_vale_cv/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../helpers/custom_route_transition.dart';
+import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_snackbar.dart';
+import 'drawer_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,13 +24,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _customRoute = CustomRouteTransition();
   final _customSnakBar = CustomSnackbar();
+
+  final secureStorage = const FlutterSecureStorage();
+  final _apiCV = ApiCV();
   TabController? _tabController;
   int tabIndex = 0;
 
   @override
   void initState() {
+    _getInfo();
     _tabController = TabController(length: 3, vsync: this);
     _tabController?.addListener(() {
       setState(() {
@@ -33,6 +43,23 @@ class _HomePageState extends State<HomePage>
       });
     });
     super.initState();
+  }
+
+  _getInfo() async {
+    Future.delayed(Duration.zero, () {
+      if (mounted) {
+        SnackBar snackBar = _customSnakBar.message(
+            msj: 'CARGANDO DATOS POR FAVOR ESPERE...',
+            icon: Icons.watch_later,
+            backGroundColor: Constants.colorAlternative,
+            loading: true,
+            time: const Duration(seconds: 2));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    });
+    await _apiCV.getDvinfo(context);
+    await _apiCV.getDvLineas(context);
+    await _apiCV.getDvSaldos(context);
   }
 
   @override
@@ -43,24 +70,31 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _appBar(),
-      backgroundColor: Constants.colorPrimary,
-      body: TabBarView(
-        controller: _tabController,
-        children: _tabsView(),
-        //physics: const NeverScrollableScrollPhysics(),
-      ),
-      bottomNavigationBar: Material(
-        elevation: 20.0,
-        child: Container(
-          color: Constants.colorDefault,
-          child: TabBar(
-            controller: _tabController,
-            labelStyle: Constants.textStyleParagraphDefault,
-            labelColor: Constants.colorAlternative,
-            unselectedLabelColor: Constants.colorSecondary,
-            tabs: _tabs(),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: const DrawerPage(),
+        appBar: _appBar(),
+        backgroundColor: Constants.colorSecondary,
+        body: TabBarView(
+          controller: _tabController,
+          children: _tabsView(),
+          //physics: const NeverScrollableScrollPhysics(),
+        ),
+        bottomNavigationBar: Material(
+          elevation: 20.0,
+          child: Container(
+            color: Constants.colorDefault,
+            child: TabBar(
+              controller: _tabController,
+              labelStyle: Constants.textStyleParagraphDefault,
+              labelColor: Constants.colorAlternative,
+              unselectedLabelColor: Constants.colorSecondary,
+              tabs: _tabs(),
+            ),
           ),
         ),
       ),
@@ -69,43 +103,47 @@ class _HomePageState extends State<HomePage>
 
   PreferredSize _appBar() {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(100),
+      preferredSize: const Size.fromHeight(80),
       child: CustomAppBar(
         actions: [
-          tabIndex == 0
-              ? IconButton(
-                  onPressed: () {
-                    BlocProvider.of<UserBloc>(context, listen: false)
-                        .add(DeleteUserEvent());
-                  },
-                  icon: const Icon(
-                    Icons.logout,
-                    color: Constants.colorDefault,
-                  ))
-              : tabIndex == 1
+          Container(
+              margin: const EdgeInsets.only(right: 10.0),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Constants.colorSecondary,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Constants.colorPrimary,
+                        blurRadius: 10.0,
+                        offset: Offset(0.0, 0.0)),
+                  ]),
+              child: tabIndex == 0
                   ? IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            _customRoute
-                                .createRutaSlide(Constants.pageClientesVale));
-                      },
-                      icon: const Icon(
-                        Icons.add,
-                        color: Constants.colorDefault,
-                      ))
-                  : IconButton(
-                      onPressed: () {
-                        if (mounted) {
-                          SnackBar snackBar = _customSnakBar.error(
-                              'HA OCURRIDO UN ERROR AL ABRIR EL FORMULARIO');
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.person_add,
-                        color: Constants.colorDefault,
-                      ))
+                      icon: const Icon(Icons.manage_accounts_sharp),
+                      onPressed: () => _scaffoldKey.currentState?.openDrawer())
+                  : tabIndex == 1
+                      ? IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                _customRoute.createRutaSlide(
+                                    Constants.pageClientesVale));
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            color: Constants.colorDefault,
+                          ))
+                      : IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                _customRoute.createRutaSlide(
+                                    Constants.pageNuevoCliente));
+                          },
+                          icon: const Icon(
+                            Icons.person_add,
+                            color: Constants.colorDefault,
+                          )))
         ],
       ),
     );

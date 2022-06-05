@@ -1,8 +1,12 @@
+import 'package:app_vale_cv/bloc/solicitud_credito/solicitud_credito_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../bloc/clientes/clientes_bloc.dart';
 import '../../helpers/constants.dart';
 import '../../helpers/custom_route_transition.dart';
+import '../../providers/api_cv.dart';
 import '../../widgets/animator.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_list_tile.dart';
@@ -20,9 +24,9 @@ class _ClientesValePageState extends State<ClientesValePage> {
   final _customShimmer = CustomShimmer();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
-  List<int> _clientes = [];
   bool _cargando = true;
   DateTime _dateGet = DateTime.now();
+  final _apiCV = ApiCV();
 
   @override
   void initState() {
@@ -31,15 +35,22 @@ class _ClientesValePageState extends State<ClientesValePage> {
   }
 
   _getClientes() async {
-    _clientes.clear();
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
+    await _apiCV.getClientes(context);
     if (mounted) {
       setState(() {
-        _clientes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         _cargando = false;
         _dateGet = DateTime.now();
       });
     }
+  }
+
+  _selectCliente(noCliente, nomnbre, tel, estatus) {
+    final solicitudBloc =
+        BlocProvider.of<SolicitudCreditoBloc>(context, listen: false);
+    solicitudBloc.add(AddClienteID(noCliente, nomnbre, tel, estatus));
+    Navigator.push(
+        context, _customRoute.createRutaSlide(Constants.pageHistorial));
   }
 
   @override
@@ -68,7 +79,7 @@ class _ClientesValePageState extends State<ClientesValePage> {
 
   PreferredSize _appBar() {
     return const PreferredSize(
-      preferredSize: Size.fromHeight(100),
+      preferredSize: Size.fromHeight(80),
       child: CustomAppBar(),
     );
   }
@@ -81,24 +92,40 @@ class _ClientesValePageState extends State<ClientesValePage> {
   }
 
   Widget _showResult() {
-    return _clientes.isNotEmpty ? _listFill() : _noData();
+    return BlocBuilder<ClientesBloc, ClientesState>(builder: (context, state) {
+      if (state.data!.clientes.isNotEmpty) {
+        return _listFill(state);
+      } else {
+        return _noData();
+      }
+    });
   }
 
   Widget _noData() {
-    return const Center(
-        child: Text(
-      'Sin clientes',
-      style: Constants.textStyleSubTitle,
-    ));
-  }
-
-  Widget _listFill() {
-    return Column(
-      children: [_listFillHeader(), const Divider(), _listFillBody()],
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        children: const [
+          SizedBox(
+            height: 600.0,
+            child: Center(
+                child: Text(
+              'SIN CLIENTES POR MOSTRAR',
+              style: Constants.textStyleSubTitle,
+            )),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _listFillHeader() {
+  Widget _listFill(ClientesState state) {
+    return Column(
+      children: [_listFillHeader(state), _listFillBody(state)],
+    );
+  }
+
+  Widget _listFillHeader(ClientesState state) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
@@ -110,14 +137,16 @@ class _ClientesValePageState extends State<ClientesValePage> {
           )),
       child: Column(
         children: [
-          const Text('NUEVO VALE', style: Constants.textStyleSubTitle),
+          const Text('NUEVO VALE',
+              style: Constants.textStyleSubTitleAlternative),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('CLIENTES', style: Constants.textStyleStandard),
+                  const Text('CLIENTES',
+                      style: Constants.textStyleStandardAlternative),
                   const Text('ULTIMA ACTUALIZACIÓN',
                       style: Constants.textStyleParagraph),
                   Text(DateFormat('dd/MM/yyyy  kk:mm:ss').format(_dateGet),
@@ -126,60 +155,68 @@ class _ClientesValePageState extends State<ClientesValePage> {
               ),
               Column(
                 children: [
-                  const Icon(Icons.person, color: Constants.colorDefaultText),
-                  Text('${_clientes.length}',
-                      style: Constants.textStyleStandard)
+                  const Icon(Icons.person, color: Constants.colorAlternative),
+                  Text('${state.data?.clientes.length}',
+                      style: Constants.textStyleStandardAlternative)
                 ],
               )
             ],
           ),
+          Container(
+            padding: const EdgeInsets.all(10.0),
+            child: const Text(
+              'SELECCIONA UN CLIENTE',
+              style: Constants.textStyleTitle,
+              textAlign: TextAlign.center,
+            ),
+          )
         ],
       ),
     );
   }
 
-  Widget _listFillBody() {
+  Widget _listFillBody(ClientesState state) {
     return Expanded(
         child: MediaQuery.removePadding(
             context: context,
             removeTop: true,
             child: ListView.builder(
-                itemCount: _clientes.length,
+                itemCount: state.data?.clientes.length,
                 itemBuilder: (_, index) {
-                  if (index == _clientes.length) {
+                  if (index == state.data?.clientes.length) {
                     return const SizedBox(height: 50.0);
                   }
                   return WidgetAnimator(
                       child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                _customRoute
-                                    .createRutaSlide(Constants.pageDesembolso));
-                          },
+                          onTap: () => _selectCliente(
+                              state.data?.clientes[index]?.clienteId,
+                              '${state.data?.clientes[index]?.primerNombre} ${state.data?.clientes[index]?.segundoNombre} ${state.data?.clientes[index]?.primerApellido} ${state.data?.clientes[index]?.segundoApellido}',
+                              state.data?.clientes[index]?.telefono,
+                              state.data?.clientes[index]?.estatusDesc),
                           child: CustomListTile(
                               title: Text(
-                                  'NOMBRE COMPLETO DEL CLIENTE ${index + 1}',
+                                  '${state.data?.clientes[index]?.primerNombre} ${state.data?.clientes[index]?.segundoNombre} ${state.data?.clientes[index]?.primerApellido} ${state.data?.clientes[index]?.segundoApellido}',
                                   style: Constants.textStyleStandard),
                               subTitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('871-234567${index + 1}',
+                                  Text(
+                                      '${state.data?.clientes[index]?.telefono}',
                                       style: Constants.textStyleParagraph),
-                                  Text('ID CLIENTE ${index + 1}',
+                                  Text(
+                                      '#${state.data?.clientes[index]?.clienteId}',
                                       style: Constants.textStyleParagraph),
                                 ],
                               ),
                               leading: const Icon(Icons.person,
                                   color: Constants.colorDefaultText),
-                              trailing: index % 3 != 0
-                                  ? const Text(
-                                      'SITUACIÓN\nNORMAL',
-                                      style: Constants.textStyleParagraph,
-                                    )
-                                  : const Text('BLOQUEADO',
-                                      style:
-                                          Constants.textStyleParagraphError))));
+                              trailing: Text(
+                                '${state.data?.clientes[index]?.estatusDesc}',
+                                style:
+                                    state.data?.clientes[index]?.estatusId != 1
+                                        ? Constants.textStyleParagraphError
+                                        : Constants.textStyleParagraph,
+                              ))));
                 })));
   }
 }

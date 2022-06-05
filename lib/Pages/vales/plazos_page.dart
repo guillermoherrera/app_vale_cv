@@ -1,12 +1,16 @@
+import 'package:app_vale_cv/bloc/plazos/plazos_bloc.dart';
+import 'package:app_vale_cv/models/plazos.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
+import '../../bloc/solicitud_credito/solicitud_credito_bloc.dart';
 import '../../helpers/constants.dart';
 import '../../helpers/custom_route_transition.dart';
+import '../../providers/api_cv.dart';
 import '../../widgets/animator.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_elevated_button.dart';
-import '../../widgets/custom_list_tile.dart';
-import '../../widgets/custom_loading.dart';
 import '../../widgets/custom_shimmer.dart';
 import '../../widgets/shake_transition.dart';
 
@@ -23,25 +27,65 @@ class _PlazosPageState extends State<PlazosPage> {
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
   bool _cargando = true;
-  bool _withInfo = false;
-  List<int> _plazos = [];
-  int optSelected = -1;
+  int _optionSelected = 0;
+  int _importeSelected = 0;
+  String _tipoPlazo = '';
+  final _apiCV = ApiCV();
+  Plazos _dataPlazos = Plazos();
+  final List<Importe> _importes = [];
+  late SolicitudCreditoState _info;
+  final moneyF = NumberFormat("#,##0.00", "en_US");
 
   _getData() async {
     await Future.delayed(const Duration(seconds: 1));
+    SolicitudCreditoState solicitudCredito =
+        context.read<SolicitudCreditoBloc>().state;
+    _dataPlazos = await _apiCV.getPlazosImporte(context);
+    if (_dataPlazos.plazos.isNotEmpty)
+      // ignore: curly_braces_in_flow_control_structures
+      _optSelected(_dataPlazos.plazos[0].plazo);
     if (mounted) {
       setState(() {
-        _withInfo = true;
+        _info = solicitudCredito;
         _cargando = false;
-        _plazos = [0, 1, 2, 3, 4];
       });
     }
   }
 
   _optSelected(int opt) {
+    _importes.clear();
+    Plazo plazo = _dataPlazos.plazos.firstWhere((e) => e.plazo == opt);
+    _tipoPlazo = plazo.tipoPlazos![0]['tipoPlazoId'];
+    for (var item in plazo.tipoPlazos![0]['importes']) {
+      _importes.add(Importe(
+          importe: item['importe'] / 1,
+          importePagoPlazo: item['importePagoPlazo'] / 1));
+    }
+
+    if (_importes.isNotEmpty)
+      // ignore: curly_braces_in_flow_control_structures
+      _impSelected(_importeSelected);
+
     setState(() {
-      optSelected = opt;
+      _optionSelected = opt;
     });
+  }
+
+  _impSelected(int index) {
+    int impSel = index > _importes.length - 1 ? 0 : index;
+    setState(() {
+      _importeSelected = impSel;
+    });
+  }
+
+  _setData() {
+    debugPrint(_optionSelected.toString());
+    debugPrint(_importes[_importeSelected].importe.toString());
+    debugPrint(_tipoPlazo);
+    final solicitudBloc =
+        BlocProvider.of<SolicitudCreditoBloc>(context, listen: false);
+    solicitudBloc.add(AddPlazoImporte(
+        _importes[_importeSelected].importe, _optionSelected, _tipoPlazo));
   }
 
   @override
@@ -61,7 +105,7 @@ class _PlazosPageState extends State<PlazosPage> {
 
   PreferredSize _appBar() {
     return const PreferredSize(
-      preferredSize: Size.fromHeight(100),
+      preferredSize: Size.fromHeight(80),
       child: CustomAppBar(),
     );
   }
@@ -97,23 +141,40 @@ class _PlazosPageState extends State<PlazosPage> {
   }
 
   Widget _showResult() {
-    return _withInfo ? _listFill() : _noData();
+    return BlocBuilder<PlazosBloc, PlazosState>(builder: (context, state) {
+      if (state.data!.plazos.isNotEmpty) {
+        return _listFill(state);
+      } else {
+        return _noData();
+      }
+    });
   }
 
   Widget _noData() {
-    return const Center(
-        child: Text(
-      'SIN INFORMACIÓN',
-      style: Constants.textStyleSubTitle,
-    ));
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        children: const [
+          SizedBox(
+            height: 600.0,
+            child: Center(
+                child: Text(
+              'SIN PLAZOS DISPONIBLES PARA ESTE CLIENTE',
+              style: Constants.textStyleSubTitle,
+              textAlign: TextAlign.center,
+            )),
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget _listFill() {
+  Widget _listFill(PlazosState state) {
     return Column(
       children: [
         _fillHeader(),
-        _fillBody(),
-        optSelected > -1 ? _button() : Container()
+        _fillBody(state),
+        _optionSelected > -1 ? _button() : Container()
       ],
     );
   }
@@ -128,8 +189,8 @@ class _PlazosPageState extends State<PlazosPage> {
               _tableRow(
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: const Text(
-                      'NOMBRE COMPLETO DEL CLIENTE SELECCIONADO',
+                    child: Text(
+                      '${_info.data?.clienteNombre}',
                       style: Constants.textStyleStandard,
                     ),
                   ),
@@ -137,57 +198,118 @@ class _PlazosPageState extends State<PlazosPage> {
               _tableRow(
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text('8711223344', style: Constants.textStyleParagraph),
-                    Text('ID #123456', style: Constants.textStyleParagraph)
+                  children: [
+                    Text('${_info.data?.clienteTelefono}',
+                        style: Constants.textStyleParagraph),
+                    Text('#${_info.data?.clienteID}',
+                        style: Constants.textStyleParagraph)
                   ],
                 ),
-                const Text('SITUACIÓN \n NORMAL',
+                Text('${_info.data?.clienteEstatusDesc}',
                     style: Constants.textStyleParagraph),
               ),
             ],
           ),
         ),
-        Container(
-          padding: const EdgeInsets.all(10.0),
-          child: const Text(
-            'CALCULA TU VALE',
-            style: Constants.textStyleTitle,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(10.0),
-          child: const Text(
-            '\$1000.00',
-            style: Constants.textStyleTitle,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
-                  'PAGO QUINCENAL:',
-                  style: Constants.textStyleSubTitle,
-                ),
-                Text(
-                  '\$125.00',
-                  style: Constants.textStyleSubTitle,
-                )
-              ]),
-        ),
-        const Divider(),
-        Container(
-          padding: const EdgeInsets.all(10.0),
-          child: const Text(
-            'QUINCENAS',
-            style: Constants.textStyleSubTitle,
-            textAlign: TextAlign.center,
-          ),
-        )
+        _importes.isEmpty
+            ? Container()
+            : Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10.0),
+                    child: const Text(
+                      'CALCULA TU VALE',
+                      style: Constants.textStyleTitle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Constants.colorDefault,
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: _importeSelected == 0
+                                          ? Constants.colorDefault
+                                          : Constants.colorDefaultText,
+                                      blurRadius: 10.0,
+                                      offset: const Offset(2.0, 5.0)),
+                                ]),
+                            child: _importeSelected == 0
+                                ? IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.remove,
+                                        color: Constants.colorDefaultText))
+                                : IconButton(
+                                    onPressed: () {
+                                      _impSelected(_importeSelected - 1);
+                                    },
+                                    icon: const Icon(Icons.remove,
+                                        color: Constants.colorDefaultText))),
+                        Text(
+                          '\$${moneyF.format(_importes[_importeSelected].importe)}',
+                          style: Constants.textStyleHeaderAlternative,
+                          textAlign: TextAlign.center,
+                        ),
+                        Container(
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Constants.colorDefault,
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: _importeSelected + 1 ==
+                                              _importes.length
+                                          ? Constants.colorDefault
+                                          : Constants.colorDefaultText,
+                                      blurRadius: 10.0,
+                                      offset: const Offset(2.0, 5.0))
+                                ]),
+                            child: _importeSelected + 1 == _importes.length
+                                ? IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.add,
+                                        color: Constants.colorDefaultText))
+                                : IconButton(
+                                    onPressed: () {
+                                      _impSelected(_importeSelected + 1);
+                                    },
+                                    icon: const Icon(Icons.add,
+                                        color: Constants.colorDefaultText))),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25.0, vertical: 5.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'PAGO POR PLAZO:',
+                            style: Constants.textStyleSubTitle,
+                          ),
+                          Text(
+                            '\$${moneyF.format(_importes[_importeSelected].importePagoPlazo)}',
+                            style: Constants.textStyleSubTitleAlternative,
+                          )
+                        ]),
+                  ),
+                  const Divider(),
+                  Container(
+                    padding: const EdgeInsets.all(10.0),
+                    child: const Text(
+                      'PLAZOS',
+                      style: Constants.textStyleSubTitle,
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ],
+              ),
       ],
     );
   }
@@ -208,18 +330,18 @@ class _PlazosPageState extends State<PlazosPage> {
     ]);
   }
 
-  Widget _fillBody() {
+  Widget _fillBody(PlazosState state) {
     return Expanded(
         child: MediaQuery.removePadding(
             context: context,
             removeTop: true,
             child: Wrap(
                 alignment: WrapAlignment.center,
-                children: _plazos.map((box) {
+                children: state.data!.plazos.map((box) {
                   return WidgetAnimator(
                     child: GestureDetector(
                       onTap: () {
-                        _optSelected(box);
+                        _optSelected(box.plazo);
                       },
                       child: Container(
                           margin: const EdgeInsets.all(10),
@@ -228,18 +350,27 @@ class _PlazosPageState extends State<PlazosPage> {
                           height: 100,
                           width: 100,
                           child: Text(
-                            '${box * 2 + 4}',
-                            style: optSelected == box
+                            '${box.plazo}',
+                            style: _optionSelected == box.plazo
                                 ? Constants.textStyleSubTitleAlternative
                                 : Constants.textStyleSubTitle,
                           ),
                           decoration: BoxDecoration(
                               color: Constants.colorDefault,
-                              border: Border.all(
-                                  color: optSelected == box
+                              boxShadow: [
+                                BoxShadow(
+                                  color: _optionSelected == box.plazo
                                       ? Constants.colorAlternative
                                       : Constants.colorDefaultText,
-                                  width: 3.0),
+                                  offset: const Offset(2.0, 5.0),
+                                  blurRadius: 7.0,
+                                ),
+                              ],
+                              border: Border.all(
+                                  color: _optionSelected == box.plazo
+                                      ? Constants.colorAlternative
+                                      : Constants.colorDefaultText,
+                                  width: 1.0),
                               borderRadius: const BorderRadius.all(
                                   Radius.circular(25.0)))),
                     ),
@@ -264,6 +395,7 @@ class _PlazosPageState extends State<PlazosPage> {
             duration: const Duration(milliseconds: 3000),
             child: CustomElevatedButton(
                 action: () {
+                  _setData();
                   Navigator.push(context,
                       _customRoute.createRutaSlide(Constants.pageDestinos));
                 },

@@ -15,28 +15,35 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      toolbarHeight: 70.0,
+      //automaticallyImplyLeading: false,
+      toolbarHeight: 80.0,
       centerTitle: true,
-      title: Column(
-        children: const [
-          /*Hero(
-              tag: 'Logo',
-              child:*/
-          Image(
-            image: AssetImage(Constants.assetsImagelogo),
+      title: Container(
+          margin: const EdgeInsets.only(right: 10.0),
+          decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Constants.colorPrimary,
+              boxShadow: [
+                BoxShadow(
+                    color: Constants.colorPrimary,
+                    blurRadius: 10.0,
+                    offset: Offset(0.0, 0.0)),
+              ]),
+          child: const Image(
+            image: AssetImage(Constants.assetsImagelogo2),
             height: 60,
-            color: Constants.colorDefault,
+            //color: Constants.colorDefault,
             fit: BoxFit.contain,
-          ) /*)*/,
-          Text(
-            'v1.0',
-            style: Constants.textStyleParagraphDefault,
-          )
-        ],
-      ),
+          )),
       backgroundColor: Colors.transparent,
       elevation: 0.0,
       actions: widget.actions,
+      // leading: const Center(
+      //   child: Text(
+      //     'v1.0',
+      //     style: Constants.textStyleStandardDefault,
+      //   ),
+      // ),
     );
   }
 }

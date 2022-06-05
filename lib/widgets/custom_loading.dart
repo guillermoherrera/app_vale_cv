@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class CustomLoading extends StatelessWidget {
   const CustomLoading(
-      {Key? key, this.label, this.color = Constants.colorPrimary})
+      {Key? key, this.label = '', this.color = Constants.colorPrimary})
       : super(key: key);
   final String? label;
   final Color? color;

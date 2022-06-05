@@ -1,10 +1,13 @@
+import 'package:app_vale_cv/bloc/vales/vales_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:app_vale_cv/helpers/constants.dart';
+import '../../bloc/solicitud_credito/solicitud_credito_bloc.dart';
 import '../../helpers/custom_route_transition.dart';
+import '../../providers/api_cv.dart';
 import '../../widgets/animator.dart';
 import '../../widgets/custom_list_tile.dart';
-import '../../widgets/custom_loading.dart';
 import '../../widgets/custom_shimmer.dart';
 
 class ValesPages extends StatefulWidget {
@@ -20,9 +23,11 @@ class _ValesPagesState extends State<ValesPages>
   final _customShimmer = CustomShimmer();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
-  List<int> _vales = [];
+  final _apiCV = ApiCV();
+  //List<int> _vales = [];
   bool _cargando = true;
   DateTime _dateGet = DateTime.now();
+  final moneyF = NumberFormat("#,##0.00", "en_US");
 
   @override
   void initState() {
@@ -31,11 +36,10 @@ class _ValesPagesState extends State<ValesPages>
   }
 
   _getVales() async {
-    _vales.clear();
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
+    await _apiCV.getVales(context);
     if (mounted) {
       setState(() {
-        _vales = [1, 2];
         _cargando = false;
         _dateGet = DateTime.now();
       });
@@ -72,24 +76,42 @@ class _ValesPagesState extends State<ValesPages>
   }
 
   Widget _showResult() {
-    return _vales.isNotEmpty ? _listFill() : _noData();
+    return BlocBuilder<ValesBloc, ValesState>(builder: (context, state) {
+      debugPrint('¿¿ ${state.toString()}');
+      if (state.data!.vales.isNotEmpty) {
+        return _listFill(state);
+      } else {
+        return _noData();
+      }
+    });
+    //return _vales.isNotEmpty ? _listFill() : _noData();
   }
 
   Widget _noData() {
-    return const Center(
-        child: Text(
-      'SIN CLIENTES',
-      style: Constants.textStyleSubTitle,
-    ));
-  }
-
-  Widget _listFill() {
-    return Column(
-      children: [_listFillHeader(), const Divider(), _listFillBody()],
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        children: const [
+          SizedBox(
+            height: 600.0,
+            child: Center(
+                child: Text(
+              'SIN VALES POR MOSTRAR',
+              style: Constants.textStyleSubTitle,
+            )),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _listFillHeader() {
+  Widget _listFill(ValesState state) {
+    return Column(
+      children: [_listFillHeader(state), const Divider(), _listFillBody(state)],
+    );
+  }
+
+  Widget _listFillHeader(ValesState state) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
@@ -105,7 +127,8 @@ class _ValesPagesState extends State<ValesPages>
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('VALES', style: Constants.textStyleSubTitle),
+              const Text('VALES',
+                  style: Constants.textStyleSubTitleAlternative),
               const Text('ULTIMA ACTUALIZACIÓN',
                   style: Constants.textStyleParagraph),
               Text(DateFormat('dd/MM/yyyy  kk:mm:ss').format(_dateGet),
@@ -114,10 +137,11 @@ class _ValesPagesState extends State<ValesPages>
           ),
           Column(
             children: [
-              const Icon(Icons.person, color: Constants.colorDefaultText),
+              const Icon(Icons.confirmation_number,
+                  color: Constants.colorAlternative),
               Text(
-                '${_vales.length}',
-                style: Constants.textStyleStandard,
+                '${state.data?.vales.length}',
+                style: Constants.textStyleStandardAlternative,
               ),
             ],
           )
@@ -126,20 +150,25 @@ class _ValesPagesState extends State<ValesPages>
     );
   }
 
-  Widget _listFillBody() {
+  Widget _listFillBody(ValesState state) {
     return Expanded(
         child: MediaQuery.removePadding(
             context: context,
             removeTop: true,
             child: ListView.builder(
-                itemCount: _vales.length,
+                itemCount: state.data?.vales.length,
                 itemBuilder: (_, index) {
-                  if (index == _vales.length) {
+                  if (index == state.data?.vales.length) {
                     return const SizedBox(height: 50.0);
                   }
                   return WidgetAnimator(
                       child: GestureDetector(
                           onTap: () {
+                            final solicitudBloc =
+                                BlocProvider.of<SolicitudCreditoBloc>(context,
+                                    listen: false);
+                            solicitudBloc.add(AddCreditoID(
+                                state.data?.vales[index]?.creditoId));
                             Navigator.push(
                                 context,
                                 _customRoute
@@ -147,27 +176,37 @@ class _ValesPagesState extends State<ValesPages>
                           },
                           child: CustomListTile(
                               title: Text(
-                                  'NOMBRE COMPLETO DEL CLIENTE ${index + 1}',
+                                  '${state.data?.vales[index]?.nombreCliente}',
                                   style: Constants.textStyleStandard),
                               subTitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('01/01/2001 00:0${index + 1} am',
+                                  Text(
+                                      '${state.data?.vales[index]?.fhRegistro}'
+                                          .substring(0, 10),
                                       style: Constants.textStyleParagraph),
-                                  const Text('\$1000.00',
+                                  Text(
+                                      '#${state.data?.vales[index]?.creditoId}',
                                       style: Constants.textStyleParagraph),
                                 ],
                               ),
                               leading: const Icon(Icons.confirmation_number,
                                   color: Constants.colorDefaultText),
-                              trailing: index == 0
-                                  ? const Text(
-                                      'ACTIVO',
-                                      style: Constants.textStyleParagraph,
-                                    )
-                                  : const Text('INACTIVO',
-                                      style:
-                                          Constants.textStyleParagraphError))));
+                              trailing: Column(
+                                children: [
+                                  Text(
+                                      '\$${moneyF.format(state.data?.vales[index]?.importe)}',
+                                      style: Constants
+                                          .textStyleStandardAlternative),
+                                  Text(
+                                    '${state.data?.vales[index]?.status}',
+                                    style: state.data?.vales[index]?.status !=
+                                            'Activo'
+                                        ? Constants.textStyleParagraphError
+                                        : Constants.textStyleParagraph,
+                                  ),
+                                ],
+                              ))));
                 })));
   }
 

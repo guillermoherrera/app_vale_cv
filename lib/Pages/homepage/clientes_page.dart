@@ -1,11 +1,14 @@
+import 'package:app_vale_cv/bloc/clientes/clientes_bloc.dart';
 import 'package:app_vale_cv/widgets/custom_shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../helpers/constants.dart';
-import 'package:app_vale_cv/widgets/custom_loading.dart';
 import 'package:app_vale_cv/widgets/custom_list_tile.dart';
 import 'package:app_vale_cv/widgets/animator.dart';
 import 'package:app_vale_cv/helpers/custom_route_transition.dart';
+
+import '../../providers/api_cv.dart';
 
 class ClientesPage extends StatefulWidget {
   const ClientesPage({Key? key}) : super(key: key);
@@ -20,9 +23,10 @@ class _ClientesPageState extends State<ClientesPage>
   final _customShimmer = CustomShimmer();
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
-  List<int> _clientes = [];
+  //List<int> _clientes = [];
   bool _cargando = true;
   DateTime _dateGet = DateTime.now();
+  final _apiCV = ApiCV();
 
   @override
   void initState() {
@@ -31,11 +35,10 @@ class _ClientesPageState extends State<ClientesPage>
   }
 
   _getClientes() async {
-    _clientes.clear();
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
+    await _apiCV.getClientes(context);
     if (mounted) {
       setState(() {
-        _clientes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         _cargando = false;
         _dateGet = DateTime.now();
       });
@@ -72,24 +75,40 @@ class _ClientesPageState extends State<ClientesPage>
   }
 
   Widget _showResult() {
-    return _clientes.isNotEmpty ? _listFill() : _noData();
+    return BlocBuilder<ClientesBloc, ClientesState>(builder: (context, state) {
+      if (state.data!.clientes.isNotEmpty) {
+        return _listFill(state);
+      } else {
+        return _noData();
+      }
+    });
   }
 
   Widget _noData() {
-    return const Center(
-        child: Text(
-      'Sin clientes',
-      style: Constants.textStyleSubTitle,
-    ));
-  }
-
-  Widget _listFill() {
-    return Column(
-      children: [_listFillHeader(), const Divider(), _listFillBody()],
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        children: const [
+          SizedBox(
+            height: 600.0,
+            child: Center(
+                child: Text(
+              'SIN CLIENTES POR MOSTRAR',
+              style: Constants.textStyleSubTitle,
+            )),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _listFillHeader() {
+  Widget _listFill(ClientesState state) {
+    return Column(
+      children: [_listFillHeader(state), const Divider(), _listFillBody(state)],
+    );
+  }
+
+  Widget _listFillHeader(ClientesState state) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
@@ -105,7 +124,8 @@ class _ClientesPageState extends State<ClientesPage>
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('CLIENTES', style: Constants.textStyleSubTitle),
+              const Text('CLIENTES',
+                  style: Constants.textStyleSubTitleAlternative),
               const Text('ULTIMA ACTUALIZACIÓN',
                   style: Constants.textStyleParagraph),
               Text(DateFormat('dd/MM/yyyy  kk:mm:ss').format(_dateGet),
@@ -114,8 +134,9 @@ class _ClientesPageState extends State<ClientesPage>
           ),
           Column(
             children: [
-              const Icon(Icons.person, color: Constants.colorDefaultText),
-              Text('${_clientes.length}', style: Constants.textStyleStandard)
+              const Icon(Icons.person, color: Constants.colorAlternative),
+              Text('${state.data?.clientes.length}',
+                  style: Constants.textStyleStandardAlternative)
             ],
           )
         ],
@@ -123,15 +144,15 @@ class _ClientesPageState extends State<ClientesPage>
     );
   }
 
-  Widget _listFillBody() {
+  Widget _listFillBody(ClientesState state) {
     return Expanded(
         child: MediaQuery.removePadding(
             context: context,
             removeTop: true,
             child: ListView.builder(
-                itemCount: _clientes.length,
+                itemCount: state.data?.clientes.length,
                 itemBuilder: (_, index) {
-                  if (index == _clientes.length) {
+                  if (index == state.data?.clientes.length) {
                     return const SizedBox(height: 50.0);
                   }
                   return WidgetAnimator(
@@ -144,27 +165,28 @@ class _ClientesPageState extends State<ClientesPage>
                           },
                           child: CustomListTile(
                               title: Text(
-                                  'NOMBRE COMPLETO DEL CLIENTE ${index + 1}',
+                                  '${state.data?.clientes[index]?.primerNombre} ${state.data?.clientes[index]?.segundoNombre} ${state.data?.clientes[index]?.primerApellido} ${state.data?.clientes[index]?.segundoApellido} ',
                                   style: Constants.textStyleStandard),
                               subTitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('871-234567${index + 1}',
+                                  Text(
+                                      '${state.data?.clientes[index]?.telefono}',
                                       style: Constants.textStyleParagraph),
-                                  Text('ID CLIENTE ${index + 1}',
+                                  Text(
+                                      '#${state.data?.clientes[index]?.clienteId}',
                                       style: Constants.textStyleParagraph),
                                 ],
                               ),
                               leading: const Icon(Icons.person,
                                   color: Constants.colorDefaultText),
-                              trailing: index % 3 != 0
-                                  ? const Text(
-                                      'SITUACIÓN\nNORMAL',
-                                      style: Constants.textStyleParagraph,
-                                    )
-                                  : const Text('BLOQUEADO',
-                                      style:
-                                          Constants.textStyleParagraphError))));
+                              trailing: Text(
+                                '${state.data?.clientes[index]?.estatusDesc}',
+                                style:
+                                    state.data?.clientes[index]?.estatusId != 1
+                                        ? Constants.textStyleParagraphError
+                                        : Constants.textStyleParagraph,
+                              ))));
                 })));
   }
 

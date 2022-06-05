@@ -34,6 +34,7 @@ class CustomElevatedButton extends StatelessWidget {
         ),
         style: ElevatedButton.styleFrom(
             primary: primaryColor ?? Constants.colorPrimary,
+            //paddingbottom
             textStyle:
                 TextStyle(color: textColor ?? Constants.colorDefaultText),
             elevation: elevation,

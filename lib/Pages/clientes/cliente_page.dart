@@ -67,7 +67,7 @@ class _ClientePageState extends State<ClientePage>
 
   PreferredSize _appBar() {
     return const PreferredSize(
-      preferredSize: Size.fromHeight(100),
+      preferredSize: Size.fromHeight(80),
       child: CustomAppBar(),
     );
   }
@@ -138,7 +138,7 @@ class _ClientePageState extends State<ClientePage>
                   const Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                          'TAMAZULA #393 PARQUE INDUSTRIAL 35078 GOMEZ PALACIO, DURANGO',
+                          'TAMAZULA #393 PARQUE INDUSTRIAL 35078 GOMEZ PALACIO, DURANGO. MÉXICO',
                           style: Constants.textStyleStandard,
                           textAlign: TextAlign.end)))
             ],
