@@ -60,7 +60,7 @@ class _ValesPagesState extends State<ValesPages>
                 topRight: Radius.circular(30.0),
               ),
               child: Container(
-                  color: Constants.colorDefault, child: _bodyContent()),
+                  color: Constants.colorSecondary, child: _bodyContent()),
             ),
           ),
         ),
@@ -116,7 +116,7 @@ class _ValesPagesState extends State<ValesPages>
       width: double.infinity,
       padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
       decoration: const BoxDecoration(
-          color: Constants.colorDefault,
+          color: Constants.colorSecondary,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
@@ -127,21 +127,20 @@ class _ValesPagesState extends State<ValesPages>
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('VALES',
-                  style: Constants.textStyleSubTitleAlternative),
+              const Text('VALES', style: Constants.textStyleSubTitleDefault),
               const Text('ULTIMA ACTUALIZACIÓN',
-                  style: Constants.textStyleParagraph),
+                  style: Constants.textStyleParagraphDefault),
               Text(DateFormat('dd/MM/yyyy  kk:mm:ss').format(_dateGet),
-                  style: Constants.textStyleParagraph)
+                  style: Constants.textStyleParagraphDefault)
             ],
           ),
           Column(
             children: [
               const Icon(Icons.confirmation_number,
-                  color: Constants.colorAlternative),
+                  color: Constants.colorDefault),
               Text(
                 '${state.data?.vales.length}',
-                style: Constants.textStyleStandardAlternative,
+                style: Constants.textStyleStandardDefault,
               ),
             ],
           )

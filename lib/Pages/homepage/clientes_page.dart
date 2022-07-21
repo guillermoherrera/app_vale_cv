@@ -59,7 +59,7 @@ class _ClientesPageState extends State<ClientesPage>
                 topRight: Radius.circular(30.0),
               ),
               child: Container(
-                  color: Constants.colorDefault, child: _bodyContent()),
+                  color: Constants.colorSecondary, child: _bodyContent()),
             ),
           ),
         ),
@@ -113,7 +113,7 @@ class _ClientesPageState extends State<ClientesPage>
       width: double.infinity,
       padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
       decoration: const BoxDecoration(
-          color: Constants.colorDefault,
+          color: Constants.colorSecondary,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
@@ -124,19 +124,18 @@ class _ClientesPageState extends State<ClientesPage>
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('CLIENTES',
-                  style: Constants.textStyleSubTitleAlternative),
+              const Text('CLIENTES', style: Constants.textStyleSubTitleDefault),
               const Text('ULTIMA ACTUALIZACIÓN',
-                  style: Constants.textStyleParagraph),
+                  style: Constants.textStyleParagraphDefault),
               Text(DateFormat('dd/MM/yyyy  kk:mm:ss').format(_dateGet),
-                  style: Constants.textStyleParagraph),
+                  style: Constants.textStyleParagraphDefault),
             ],
           ),
           Column(
             children: [
-              const Icon(Icons.person, color: Constants.colorAlternative),
+              const Icon(Icons.person, color: Constants.colorDefault),
               Text('${state.data?.clientes.length}',
-                  style: Constants.textStyleStandardAlternative)
+                  style: Constants.textStyleStandardDefault)
             ],
           )
         ],

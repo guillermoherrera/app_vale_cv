@@ -79,24 +79,46 @@ class _HomePageState extends State<HomePage>
         drawer: const DrawerPage(),
         appBar: _appBar(),
         backgroundColor: Constants.colorSecondary,
-        body: TabBarView(
-          controller: _tabController,
-          children: _tabsView(),
-          //physics: const NeverScrollableScrollPhysics(),
-        ),
-        bottomNavigationBar: Material(
-          elevation: 20.0,
-          child: Container(
-            color: Constants.colorDefault,
-            child: TabBar(
-              controller: _tabController,
-              labelStyle: Constants.textStyleParagraphDefault,
-              labelColor: Constants.colorAlternative,
-              unselectedLabelColor: Constants.colorSecondary,
-              tabs: _tabs(),
-            ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Material(
+                elevation: 0.0,
+                child: Container(
+                  color: Constants.colorDefault,
+                  child: TabBar(
+                    controller: _tabController,
+                    labelStyle: Constants.textStyleParagraphDefault,
+                    labelColor: Constants.colorAlternative,
+                    unselectedLabelColor: Constants.colorSecondary,
+                    tabs: _tabs(),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: _tabController,
+                  children: _tabsView(),
+                  //physics: const NeverScrollableScrollPhysics(),
+                ),
+              ),
+            ],
           ),
         ),
+        // bottomNavigationBar: Material(
+        //   elevation: 20.0,
+        //   child: Container(
+        //     color: Constants.colorDefault,
+        //     child: TabBar(
+        //       controller: _tabController,
+        //       labelStyle: Constants.textStyleParagraphDefault,
+        //       labelColor: Constants.colorAlternative,
+        //       unselectedLabelColor: Constants.colorSecondary,
+        //       tabs: _tabs(),
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }
@@ -113,7 +135,7 @@ class _HomePageState extends State<HomePage>
                   color: Constants.colorSecondary,
                   boxShadow: [
                     BoxShadow(
-                        color: Constants.colorPrimary,
+                        color: Constants.colorDefault,
                         blurRadius: 10.0,
                         offset: Offset(0.0, 0.0)),
                   ]),

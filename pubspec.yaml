@@ -27,6 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  card_swiper: ^2.0.4
   plugin_platform_interface: ^1.0.2
   device_info: ^0.4.0+4
   bloc: ^8.0.3

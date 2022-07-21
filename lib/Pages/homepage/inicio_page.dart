@@ -9,6 +9,7 @@ import 'package:app_vale_cv/widgets/custom_elevated_button.dart';
 import '../../helpers/constants.dart';
 import '../../helpers/custom_route_transition.dart';
 import '../../providers/api_cv.dart';
+import '../../widgets/custom_card_swiper.dart';
 
 class InicioPage extends StatefulWidget {
   const InicioPage({Key? key}) : super(key: key);
@@ -47,7 +48,8 @@ class _InicioPageState extends State<InicioPage>
         return Column(
           children: [
             //_colocaGana(),
-            _saldoDetalle(state),
+            _cardSaldo2(),
+            //_saldoDetalle(state),
             _miSaldo(state),
             _nuevoCredito(state),
             BlocBuilder<DvSaldoBloc, DvSaldosState>(
@@ -214,6 +216,12 @@ class _InicioPageState extends State<InicioPage>
           );
   }
 
+  Widget _cardSaldo2() {
+    return CardSwiper(
+      movies: [Container(), Container(), Container()],
+    );
+  }
+
   Widget _cardSaldo(DvLineasDetalle? item) {
     return WidgetAnimator(
       child: Container(
@@ -289,14 +297,14 @@ class _InicioPageState extends State<InicioPage>
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-        color: Constants.colorDefaultText.withOpacity(0.2),
+        color: Constants.colorSecondary,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text('NUEVO VALE DIGITAL',
                 style: Constants.textStyleTitleDefault),
             const Text('OTORGA UN NUEVO VALE A TUS CLIENTES',
-                style: Constants.textStyleParagraph),
+                style: Constants.textStyleParagraphDefault),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -315,8 +323,8 @@ class _InicioPageState extends State<InicioPage>
                               .createRutaSlide(Constants.pageClientesVale));
                   },
                   primaryColor: Constants.colorDefault,
-                  textColor: Constants.colorPrimary,
-                  borderColor: Constants.colorPrimary,
+                  textColor: Constants.colorSecondary,
+                  borderColor: Constants.colorSecondary,
                 ),
                 // CustomElevatedButton(
                 //   label: 'CONFIASHOP',
@@ -354,18 +362,18 @@ class _InicioPageState extends State<InicioPage>
                     ),
                     width: double.infinity,
                     height: 100.0,
-                    color: Constants.colorDefault,
+                    color: Constants.colorSecondary,
                   )
                 : Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
                         vertical: 15.0, horizontal: 10.0),
-                    color: Constants.colorDefault,
+                    color: Constants.colorSecondary,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text('GANA MAS PAGANDO ANTES',
-                            style: Constants.textStyleSubTitle),
+                            style: Constants.textStyleSubTitleDefault),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 5.0, vertical: 5.0),
@@ -373,22 +381,27 @@ class _InicioPageState extends State<InicioPage>
                             children: [
                               _tableRow(
                                   const Text('FECHA PAGO',
-                                      style: Constants.textStyleStandard),
+                                      style:
+                                          Constants.textStyleStandardDefault),
                                   Text(
                                       '${state.data?.bonificaciones?[0].fechaPago}',
                                       style: Constants.textStyleStandard)),
                               _tableRow(
                                   const Text('TASA PORCENTAJE',
-                                      style: Constants.textStyleStandard),
+                                      style:
+                                          Constants.textStyleStandardDefault),
                                   Text(
                                       '${state.data?.bonificaciones?[0].porcentaje}%',
-                                      style: Constants.textStyleStandard)),
+                                      style:
+                                          Constants.textStyleStandardDefault)),
                               _tableRow(
                                   const Text('BONIFICACIÓN',
-                                      style: Constants.textStyleStandard),
+                                      style:
+                                          Constants.textStyleStandardDefault),
                                   Text(
                                       '\$${moneyF.format(state.data?.bonificaciones?[0].bonificacion)}',
-                                      style: Constants.textStyleStandard)),
+                                      style:
+                                          Constants.textStyleStandardDefault)),
                             ],
                           ),
                         ),
@@ -417,7 +430,7 @@ class _InicioPageState extends State<InicioPage>
                         //   ),
                         // ),
                         const Text('ÚLTIMA RELACIÓN',
-                            style: Constants.textStyleSubTitle),
+                            style: Constants.textStyleSubTitleDefault),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 5.0, vertical: 5.0),
@@ -426,15 +439,17 @@ class _InicioPageState extends State<InicioPage>
                               _tableRow(
                                   Text(
                                       '${state.data?.relaciones?[0].fechaCorte.substring(0, 10)}',
-                                      style: Constants.textStyleStandard),
+                                      style:
+                                          Constants.textStyleStandardDefault),
                                   Text(
                                       '\$${moneyF.format(state.data?.relaciones?[0].saldoActual)}',
-                                      style: Constants.textStyleStandard))
+                                      style:
+                                          Constants.textStyleStandardDefault))
                             ],
                           ),
                         ),
                         const Text('PRESTAMO PERSONAL',
-                            style: Constants.textStyleSubTitle),
+                            style: Constants.textStyleSubTitleDefault),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 5.0, vertical: 5.0),
@@ -442,22 +457,28 @@ class _InicioPageState extends State<InicioPage>
                             children: [
                               _tableRow(
                                   const Text('SALDO ACTUAL',
-                                      style: Constants.textStyleStandard),
+                                      style:
+                                          Constants.textStyleStandardDefault),
                                   Text(
                                       '\$${moneyF.format(state.data?.detallePrestamoPersonal?.saldoActualPrestamoPersonal)}',
-                                      style: Constants.textStyleStandard)),
+                                      style:
+                                          Constants.textStyleStandardDefault)),
                               _tableRow(
                                   const Text('ABONO QUINCENAL',
-                                      style: Constants.textStyleStandard),
+                                      style:
+                                          Constants.textStyleStandardDefault),
                                   Text(
                                       '\$${moneyF.format(state.data?.detallePrestamoPersonal?.saldoAbonadoPrestamoPersonal)}',
-                                      style: Constants.textStyleStandard)),
+                                      style:
+                                          Constants.textStyleStandardDefault)),
                               _tableRow(
                                   const Text('SALDO VENCIDO',
-                                      style: Constants.textStyleStandard),
+                                      style:
+                                          Constants.textStyleStandardDefault),
                                   Text(
                                       '\$${moneyF.format(state.data?.detallePrestamoPersonal?.saldoAtrasadoPrestamoPersonal)}',
-                                      style: Constants.textStyleStandard))
+                                      style:
+                                          Constants.textStyleStandardDefault))
                             ],
                           ),
                         ),
@@ -483,7 +504,7 @@ class _InicioPageState extends State<InicioPage>
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-          color: Constants.colorDefault,
+          color: Constants.colorSecondary,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -491,17 +512,17 @@ class _InicioPageState extends State<InicioPage>
                 children: const [
                   Icon(
                     Icons.info_outline,
-                    color: Constants.colorSecondary,
+                    color: Constants.colorDefault,
                   ),
                   Text(
                     'RELACIÓN DE COBRO',
-                    style: Constants.textStyleSubTitle,
+                    style: Constants.textStyleSubTitleDefault,
                   )
                 ],
               ),
               const Text(
                 'DESCARGA TU RELACIÓN DE COBRA AQUÍ',
-                style: Constants.textStyleParagraph,
+                style: Constants.textStyleParagraphDefault,
               ),
               Center(
                 child: CustomElevatedButton(
@@ -509,8 +530,8 @@ class _InicioPageState extends State<InicioPage>
                       ? 'NO DISPONIBLE'
                       : 'DESCARGAR',
                   action: () {},
-                  primaryColor: Constants.colorSecondary,
-                  textColor: Constants.colorDefault,
+                  primaryColor: Constants.colorDefault,
+                  textColor: Constants.colorSecondary,
                   borderColor: Constants.colorSecondary,
                 ),
               ),
